@@ -81,8 +81,13 @@ Pm = 65
 sped	= 'ctrl(67,127)'			// 67: soft pedal
 spedoff	= 'ctrl(67,0)'
 Sped = 67
+poly_mode = 'ctrl(127,0)'
+mono_mode = 'ctrl(126,0)'
 
 // parameter control
+// add a workaround for sequencers that need controllers spaced out in time to maintain order to all 4 macros below.
+// Set the following variable to 1 in a source file if this feature is needed.
+$gap_needed = 0
 def(rpc, "ii") { // rpc(RPN, data): registered parameter control (0-127)
   ctrl(100, $1 & 0x7f)
   ctrl(101, ($1 shr 8) & 0x7f)
@@ -98,19 +103,35 @@ def(rpcw, "ii") { // rpcw(RPN, data): registered parameter control (0-16383)
 def(nrpc, "ii") { // nrpc(NRPN, data): non-registered PC (0-127)
   ctrl(98, $1 & 0x7f)
   ctrl(99, ($1 shr 8) & 0x7f)
-  ctrl(6, $2 & 0x7f)
+  if ($gap_needed) { r(4u) } ctrl(6, $2 & 0x7f)
   ctrl(38, ($2 shl 7) & 0x7f)
 }
 def(nrpcw, "ii") { // nrpcw(NRPN, data): non-registered PC (0-16383)
   ctrl(98, $1 & 0x7f)
   ctrl(99, ($1 shr 8) & 0x7f)
-  ctrl(6, ($2 shr 7) & 0x7f)
+  if ($gap_needed) { r(4u) } ctrl(6, ($2 shr 7) & 0x7f)
   ctrl(38, $2 & 0x7f)
 }
 
-def(bender_range, "i") { rpc(0, $1) }
-def(fine_tune, "i")    { rpcw(0, $1+0x2000) }   // -8192 <= $1 <= 8191
-def(coarse_tune, "i")  { rpc(0, $1+0x40) }      // -64 <= $1 <= 63 
+$bend_range = 2 // common default on most gm compatible synths.
+def(bender_range, "i") { rpc(0, $1)
+$bend_range = $1
+}
+
+// calculate a pitchbend value based on number of semitones given.
+def(bend_tones, "i") {
+$1*(8192/$bend_range)
+}
+
+// a macro to slide over a certain duration to a given number of semitones, then reset the wheel at the given speed
+// format: slide_to(wait, duration, semitones, resetSpeed)
+// duration and speed are rational, semitones is parsed through the bend_tones macro above.
+def(slide_to, "rrir") {
+rt+=$1 bend(0) rt+=$2-$4 bend_pt(bend_tones($3)) rt+=$4 bend_to(0)
+}
+
+def(fine_tune, "i")    { rpcw(1, $1+0x2000) }   // -8192 <= $1 <= 8191
+def(coarse_tune, "i")  { rpc(2, $1+0x40) }      // -64 <= $1 <= 63 
 
 // 123: all notes off
 all_notes_off = 'ctrl(123, 0)'
@@ -200,3 +221,14 @@ eff_chs = 'set_eff_chs()'
 thru_chs = 'set_thru_chs()'
 set_cthru = 'del_eff_chs()'
 clr_cthru = 'add_eff_chs()'
+// send the given pmml to multiple tracks at once.
+
+def(layer_tracks, "aq")
+{
+foreach($i, $1)
+{
+$i {
+$2
+}
+}
+}

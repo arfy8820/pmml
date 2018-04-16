@@ -27,18 +27,23 @@ def(pmctrl, "i")  { ctrl(84, $1) }		// 84: portamento control
 defctrl("reverb", "Reverb", 91, 15, 1)		// 91: reverb send level
 defctrl("chorus", "Chorus", 93, 15, 1)		// 93: chorus send level
 defctrl("delay", "Delay", 94, 15, 1)		// 94: delay send level
+defctrl("filter", "Filter", 74, 15, 1) // Same as nrpc filter control, Believed undocumented until sc-8850/20.
+defctrl("filter_res", "Filter_res", 71, 15, 1) // Same as nrpc filter resonance control, Believed undocumented until
+// sc-8850/20.
+defctrl("attack", "Attack", 73, 15, 1) // Same as attack rate nrpc.
+defctrl("release", "Release", 72, 15, 1) // Same as release rate nrpc.
 
 all_sound_off = 'ctrl(120,0)'
 reset_all_ctrls = 'ctrl(121,0)'
 
 /* NRPCs */
-def(vib_rate, "i")    {nrpc(0x1008, $1 + 64)}	// vibrato rate (-64 - 63) 
-def(vib_depth, "i")   {nrpc(0x1009, $1 + 64)}	// vibrato depth (-64 - 63) 
-def(vib_delay, "i")   {nrpc(0x100a, $1 + 64)}	// vibrato delay (-64 - 63) 
-def(tvf_cutoff, "i")  {nrpc(0x1020, $1 + 64)}	// TVF cutoff freq (-64 - 63) 
-def(tvf_reso, "i")    {nrpc(0x1021, $1 + 64)}	// TVF resonance (-64 - 63) 
-def(env_attack, "i")  {nrpc(0x1063, $1 + 64)}	// envelope attack (-64 - 63) 
-def(env_decay, "i")   {nrpc(0x1064, $1 + 64)}	// envelope decay (-64 - 63) 
+def(vib_rate, "i")    {nrpc(0x0108, $1 + 64)}	// vibrato rate (-64 - 63) 
+def(vib_depth, "i")   {nrpc(0x0109, $1 + 64)}	// vibrato depth (-64 - 63) 
+def(vib_delay, "i")   {nrpc(0x010a, $1 + 64)}	// vibrato delay (-64 - 63) 
+def(tvf_cutoff, "i")  {nrpc(0x0120, $1 + 64)}	// TVF cutoff freq (-64 - 63) 
+def(tvf_reso, "i")    {nrpc(0x0121, $1 + 64)}	// TVF resonance (-64 - 63) 
+def(env_attack, "i")  {nrpc(0x0163, $1 + 64)}	// envelope attack (-64 - 63) 
+def(env_decay, "i")   {nrpc(0x0164, $1 + 64)}	// envelope decay (-64 - 63) 
 // set per-note drums parameters   (ex.) drums_pitch(drums_no(BD), 10)
 def(drums_pitch, "ii") {nrpc(0x1800 + $1, $2 + 64)} // drums pitch (-64 - 63) 
 def(drums_level, "ii") {nrpc(0x1a00 + $1, $2)}  // drums level (0-127)
@@ -81,6 +86,30 @@ def(xprog, "ii") {
 
 sc55map = 'bank_num_lsb=1  bank(0)'
 sc88map = 'bank_num_lsb=2  bank(0)'
+
+
+// alternative to xprog, xprog2 takes either 2 or 3 args.
+// if 2 args, xprog2(fullBankNo, progNo)
+// else if 3 args, xprog2(bankMsb, bankLsb, progNo)
+// FullBannkNO is converted to msb and lsb with (fullBankNo/128, fullBankNo%128)
+// ProgNo is 0 based, not 1 based as with the prog macro.
+// This macro is a placeholder until gs_inst is updated to this format.
+
+def(xprog2, "ii:i")
+{
+  if ($# == 2)
+{
+ctrl(0, $1/128)
+ctrl(32, $1%128)
+prog($2+1)
+}
+else
+{
+ctrl(0, $1)
+ctrl(32, $2)
+prog($3+1)
+}
+}
 
 /*
  * initial bender range in semitones
@@ -155,9 +184,75 @@ def(gs_set_reverb, "i*") { // gs_set_reverb(macro, [, charac, pre-lpf,
   gs_excl(0x400130, $*)
 }
 
+// individual parameter controls.
+def(gs_reverb_macro, "i") {
+gs_excl(0x400130, #($1))
+}
+
+def(gs_reverb_character, "i") {
+gs_excl(0x400131, #($1))
+}
+
+def(gs_reverb_pre_LPF, "i") {
+gs_excl(0x400132, #($1))
+}
+
+def(gs_reverb_level, "i") {
+gs_excl(0x400133, #($1))
+}
+
+def(gs_reverb_time, "i") {
+gs_excl(0x400134, #($1))
+}
+
+def(gs_reverb_delay_fb, "i") {
+gs_excl(0x400135, #($1))
+}
+
+def(gs_reverb_predelay, "i") {
+gs_excl(0x400137, #($1))
+}
+
 def(gs_set_chorus, "i*") { // gs_set_chorus(macro, [, pre-rpf, level, feedback,
 		           //   delay, rate, depth, snd_to_rev, snd_to_delay] )
   gs_excl(0x400138, $*)
+}
+
+// individual parameter controls
+def(gs_chorus_macro, "i") {
+gs_excl(0x400138, #($1))
+}
+
+def(gs_chorus_pre_LPF, "i") {
+gs_excl(0x400139, #($1))
+}
+
+def(gs_chorus_level, "i") {
+gs_excl(0x40013a, #($1))
+}
+
+def(gs_chorus_fb, "i") {
+gs_excl(0x40013b, #($1))
+}
+
+def(gs_chorus_delay, "i") {
+gs_excl(0x40013c, #($1))
+}
+
+def(gs_chorus_rate, "i") {
+gs_excl(0x40013d, #($1))
+}
+
+def(gs_chorus_depth, "i") {
+gs_excl(0x40013e, #($1))
+}
+
+def(gs_chorus_to_reverb, "i") {
+gs_excl(0x40013f, #($1))
+}
+
+def(gs_chorus_to_delay, "i") {
+gs_excl(0x400140, #($1))
 }
 
 def(gs_set_delay, "i*")  { // gs_set_delay(macro, [, pre-lpf, time-cent,
@@ -166,8 +261,79 @@ def(gs_set_delay, "i*")  { // gs_set_delay(macro, [, pre-lpf, time-cent,
   gs_excl(0x400150, $*)
 }
 
+// individual parameter controls
+def(gs_delay_macro, "i") {
+gs_excl(0x400150, #($1))
+}
+
+def(gs_delay_pre_LPF, "i") {
+gs_excl(0x400151, #($1))
+}
+
+def(gs_delay_time_c, "i") {
+gs_excl(0x400152, #($1))
+}
+
+def(gs_delay_time_ratio_l, "i") {
+gs_excl(0x400153, #($1))
+}
+
+def(gs_delay_time_ratio_r, "i") {
+gs_excl(0x400154, #($1))
+}
+
+def(gs_delay_level_c, "i") {
+gs_excl(0x400155, #($1))
+}
+
+def(gs_delay_level_l, "i") {
+gs_excl(0x400156, #($1))
+}
+
+def(gs_delay_level_r, "i") {
+gs_excl(0x400157, #($1))
+}
+
+def(gs_delay_level, "i") {
+gs_excl(0x400158, #($1))
+}
+
+def(gs_delay_fb, "i") {
+gs_excl(0x400159, #($1))
+}
+
+def(gs_delay_to_reverb, "i") {
+gs_excl(0x40015a, #($1))
+}
+
 def(gs_set_eqlzer, "i*") { // gs_set_eqlzer(l-freq, l-gain, h-freq, h-gain)
   gs_excl(0x400200, $*)
+}
+
+def(gs_set_fx, "i*") { // fxTypeH, fxTypeL, dumby, fxp1, fxp2, fxp3... fxp20, sndToReverb, SndToChorus, sndToDelay.
+  gs_excl(0x400300, $*)
+}
+
+// individual parameter controls
+def(gs_fx_type, "ii") { // fx type has both msb and lsb.
+gs_excl(0x400300, $*)
+}
+
+// gs_fx_param(paramNo, value) - specify each parameter individually.
+def(gs_fx_param, "ii") {
+gs_excl(0x400303+($1-1), #($2))
+}
+
+def(gs_fx_to_reverb, "i") {
+gs_excl(0x400317, #($1))
+}
+
+def(gs_fx_to_chorus, "i") {
+gs_excl(0x400318, #($1))
+}
+
+def(gs_fx_to_delay, "i") {
+gs_excl(0x400319, #($1))
 }
 
 /* 
@@ -222,6 +388,31 @@ def(gs_display_page, "i") {  // gs_display_page(page_no)
 }
 def(gs_display_time, "i") {  // gs_display_time(time)
   gs_excl(0x102001, #($1))
+}
+
+/*
+Returns the appropriate representation of the ch register for a gs exclusive.
+1-9 for channels 1 to 9, 0 for channel 10, and 10 through 15 for channels 11 to 16.
+*/
+
+def (gs_chan, "")
+{
+switch (ch)
+{
+case(1,2,3,4,5,6,7,8,9) { ch }
+case(10) { 0 }
+case(11,12,13,14,15,16) { ch-1 }
+default { error("Huh? How did we get here? \n") }
+}
+}
+
+/* Set the specified channel in the ch register to the given drum map.
+0 for melody, 1 or 2 for specified drum map.
+*/
+
+def (gs_drum_map, "i")
+{
+gs_excl(0x401015 + (gs_chan() shl 8), #($1))
 }
 
 /*
