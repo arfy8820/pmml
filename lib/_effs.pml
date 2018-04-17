@@ -710,25 +710,22 @@ def(slim_chord, "n:r") {
   }
 }
 
-defeff(glide_notes, "r:r") {
+defeff(glide_notes, "rr") {
 // use the pitch bend to glide between a series of notes, at the given speed.
 // at the end, reset the pitch bender to 0 over the given duration.
 // specify speeds as rationals (durations)
 // the glide speed can be changed mid-passage by changing the glspeed variable.
 // the first argument simply sets it's initial value.
-// if resetSpeed is not specified, it defaults to 0.
 init {
-$prev_t = -1
 $num_notes = 0
 $base_note = 0
 glspeed = $1
-$reset_speed = (null($2) ? 0 : $2)
+reset_speed = $2
 }
 
 case(note) {
 $num_notes += 1
 if ($num_notes == 1) { // first note in this buffer, turn on the note
-$prev_t = t
 $base_note = n // store the base note to turn off later and for future bends.
 note_on(n)
 // start the bend curve.
@@ -738,14 +735,12 @@ else {
 $semitones = n-$base_note // get the difference between the 2 notes (number of semitones)
 // do the slide.
 rt -= glspeed bend(LASTVAL) rt+=glspeed bend_to(bend_tones($semitones))
-// now get the updated values.
-$prev_t = t
 }
 reject
 }
 wrap {
-rt += du-$reset_speed
-bend(LASTVAL) rt += $reset_speed bend_to(0)
+rt += du-reset_speed
+bend(LASTVAL) rt += reset_speed bend_to(0)
 note_off($base_note)
 }
 }
@@ -762,7 +757,7 @@ if (du >= $3) {
 }
 }
 
-defeff(gate_ctrl, "n:n") {
+defeff(gate_ctrl, "nn") {
 // gate a controller based on incoming note-on and note-off events.
 // parameters are the controller number to gate, and the value to use when the gate is closed.
 // the gate open value is controlled by incoming note velocity. yes, velocity!
@@ -771,7 +766,7 @@ ctrl($1, v) // Yes, that's really what it looks like!
 reject
 }
 case(note_off) {
-ctrl($1, (null($2) ? 0 : $2))
+ctrl($1, $2)
 reject
 }
 }

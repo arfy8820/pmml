@@ -5,6 +5,8 @@
 /*
  *  Copyright (C) 1997,1998   Satoshi Nishimura
  *
+ * Additions made by Arthur Pirika
+
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -21,93 +23,13 @@
  */
 
 /*
- * define model specific control changes
- */
-def(pmctrl, "i")  { ctrl(84, $1) }		// 84: portamento control
-defctrl("reverb", "Reverb", 91, 15, 1)		// 91: reverb send level
-defctrl("chorus", "Chorus", 93, 15, 1)		// 93: chorus send level
-defctrl("variation", "Variation", 94, 15, 1)		// 94: delay send level
-defctrl("filter", "Filter", 74, 15, 1) // documented in xg specs as harmonic brightness control
-defctrl("filter_res", "Filter_res", 71, 15, 1) // documented in xg spec as harmonic content control.
-defctrl("attack", "Attack", 73, 15, 1) // Same as attack rate nrpc.
-defctrl("release", "Release", 72, 15, 1) // Same as release rate nrpc.
-
-all_sound_off = 'ctrl(120,0)'
-reset_all_ctrls = 'ctrl(121,0)'
-
-/* NRPCs */
-def(vib_rate, "i")    {nrpc(0x0108, $1 + 64)}	// vibrato rate (-64 - 63) 
-def(vib_depth, "i")   {nrpc(0x0109, $1 + 64)}	// vibrato depth (-64 - 63) 
-def(vib_delay, "i")   {nrpc(0x010a, $1 + 64)}	// vibrato delay (-64 - 63) 
-def(tvf_cutoff, "i")  {nrpc(0x0120, $1 + 64)}	// TVF cutoff freq (-64 - 63) 
-def(tvf_reso, "i")    {nrpc(0x0121, $1 + 64)}	// TVF resonance (-64 - 63) 
-def(env_attack, "i")  {nrpc(0x0163, $1 + 64)}	// envelope attack (-64 - 63) 
-def(env_decay, "i")   {nrpc(0x0164, $1 + 64)}	// envelope decay (-64 - 63) 
-def(env_release, "i")   {nrpc(0x0166, $1 + 64)}	// envelope decay (-64 - 63)
-// set per-note drums parameters   (ex.) drums_pitch(drums_no(BD), 10)
-def(drums_filter, "ii") {nrpc(0x1400 + $1, $2 + 64)} // drums filter cutoff (-64 - 63)
-def(drums_filter_res, "ii") {nrpc(0x1500 + $1, $2 + 64)} // drums filter resonance  (-64 - 63)
-def(drums_env_attack, "ii") {nrpc(0x1600 + $1, $2 + 64)} // drums attack rate (-64 - 63)
-def(drums_env_decay, "ii") {nrpc(0x1700 + $1, $2 + 64)} // drums decay rate (-64 - 63)
-def(drums_pitch, "ii") {nrpc(0x1800 + $1, $2 + 64)} // drums pitch (-64 - 63) 
-def(drums_pitch_fine, "ii") {nrpc(0x1900 + $1, $2 + 64)} // drums pitch fine tuning (-64 - 63)
-def(drums_level, "ii") {nrpc(0x1a00 + $1, $2)}  // drums level (0-127)
-def(drums_pan, "ii")   {nrpc(0x1c00 + $1, $2)}  // drums pan (1-127, 0 for rnd)
-def(drums_reverb, "ii"){nrpc(0x1d00 + $1, $2)}	// drums reverb (0-127)
-def(drums_chorus, "ii"){nrpc(0x1e00 + $1, $2)}	// drums chorus (0-127)
-def(drums_variation, "ii") {nrpc(0x1f00 + $1, $2)}	// drums variation effect (0-127)
-
-/* values for panpot control */
-left7 = 0
-left6 = 10
-left5 = 19
-left4 = 28
-left3 = 37
-left2 = 46
-left1 = 55
-center = 64
-right1  = 73
-right2  = 82
-right3  = 91
-right4  = 100 
-right5  = 109
-right6  = 118
-right7  = 127
-
-// xprog. extended program change.
-// xprog takes either 2 or 3 args.
-// if 2 args, xprog(fullBankNo, progNo)
-// else if 3 args, xprog(bankMsb, bankLsb, progNo)
-// FullBannkNO is converted to msb and lsb with (fullBankNo/128, fullBankNo%128)
-// ProgNo is 0 based, not 1 based as with the prog macro.
-def(xprog, "ii:i")
-{
-  if ($# == 2)
-{
-ctrl(0, $1/128)
-ctrl(32, $1%128)
-prog($2+1)
-}
-else
-{
-ctrl(0, $1)
-ctrl(32, $2)
-prog($3+1)
-}
-}
-
-/*
  * initial bender range in semitones
  */
 init_bender_range = 2		// initial bender range is +-2 semitones
 
-/* 
- * GM system on
- */
-gm_system_on = 'excl(#(0x7e, 0x7f, 0x09, 0x01))'
-
 /*
- * XG-specific exclusive messages. Based on level 1 xg specs.
+ * XG-specific exclusive messages. Based on the mu2000EX
+ * Most messages will work on level 1 devices, exceptions are noted.
  */
 device_id = 16		// this can be changed later by users
 
@@ -176,12 +98,13 @@ def(xg_chorus_to_reverb, "i") { xg_excl(0x02012E, $1) }
 
 // variation effect
 def(xg_variation_type, "ii") { xg_excl2(0x020140, $1, $2) }
-def(xg_variation_param, "ii:i") // specify variation parameters.
-// for parameters 1 to 10, specify both msb and lsb values.
+def(xg_variation_param, "ii") // specify variation parameters.
+// for parameters 1 to 10, the single value here is converted to 
+// specify both msb and lsb values.
 // for parameters 11 to 16, only one value is needed.
 {
 if ($1 > 16) { error("Parameter number out of range, should be between 1 and 16.") }
-if ($1 >= 1 && $1 <= 10) { xg_excl2(0x020142+(2*($1-1)), $2, $3) }
+if ($1 >= 1 && $1 <= 10) { xg_excl2(0x020142+(2*($1-1)), $2/128, $2%128) }
 else { xg_excl(0x020170+($1-11), $2) }
 }
 def(xg_variation_return, "i") {xg_excl(0x020156, $1) }
@@ -190,7 +113,58 @@ def(xg_variation_to_reverb, "i") {xg_excl(0x020158, $1) }
 def(xg_variation_to_chorus, "i") {xg_excl(0x020159, $1) }
 def(xg_variation_connection, "i") {xg_excl(0x02015A, $1) }
 
+// Support for extra insertion effects.
+// Check with your devices manual to see how many effects are supported.
+// Info here is based on the mu128 and mu1000/2000 modules.
+// for each of these macros, specify the number of the insertion effect that the command applies to as the first argument.
+
+// insertion type.
+// specify msb and lsb.
+def(xg_insertion_type, "iii") {
+if ($1 > 4) { error("Sorry, only 4 insertion effects are supported at this time.") }
+xg_excl2(0x030000 + ($1-1 shl 8), $2, $3)
+}
+
+// insertion parameters that take one byte.
+// parameters. insertion number, parameter number, value.
+def(xg_insertion_param, "iii") {
+if ($1 > 4) { error("Sorry, only 4 insertion effects are supported at this time.") }
+if ($2 > 16) { error("Parameter should be between 1 and 16.") }
+if ($2 >= 1 && $2 <= 10) { xg_excl(0x030002 + ($1-1 shl 8) + $2-1, $3) }
+else { xg_excl(0x030020 + ($1-1 shl 8) + $2-11, $3) }
+}
+
+// insertion parameters that use a full 14-bit value.
+// parameters. insertion number, parameter number, value.
+// applies to parameters 1-10 only.
+def(xg_insertion_param_w, "iii") {
+if ($1 > 4) { error("Sorry, only 4 insertion effects are supported at this time.") }
+if ($2 > 10) { error("Only parameters 1 to 10 support 14-bit values.") }
+xg_excl2(0x030030 + ($1-1 shl 8 ) + 2*($2-1), $3/128, $3%128)
+}
+
+// specify the part to which an insertion effect is applied.
+// specify part 127 to  turn the effect off.
+
+def(xg_insertion_part, "ii") {
+xg_excl(0x03000C + ($1-1 shl 8), $2)
+}
+
 // enable random panning on the channel specified with the ch register.
 xg_random_pan = 'xg_excl(0x08000E+(ch-1 shl 8), 0)'
 
-// TBA: Instrument names and drum settings specific to xg.
+// support for xg plugin boards.
+// xg_plg_board(type, serial, part)
+def (xg_plugin_board, "iii") {
+xg_excl(0x700000 + ($1 shl 8) + $2, $3)
+}
+
+// supported plg boards, use these in first parameter of xg_plugin_board macro.
+plg100vl = 0
+plg100sg = 1
+plg100dx = 2
+plg100an = 3
+plg100pf = 4
+
+// include xg rhythm instruments file
+include ("xg_drums")

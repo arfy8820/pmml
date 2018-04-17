@@ -21,105 +21,9 @@
  */
 
 /*
- * define model specific control changes
- */
-def(pmctrl, "i")  { ctrl(84, $1) }		// 84: portamento control
-defctrl("reverb", "Reverb", 91, 15, 1)		// 91: reverb send level
-defctrl("chorus", "Chorus", 93, 15, 1)		// 93: chorus send level
-defctrl("delay", "Delay", 94, 15, 1)		// 94: delay send level
-defctrl("filter", "Filter", 74, 15, 1) // Same as nrpc filter control, Believed undocumented until sc-8850/20.
-defctrl("filter_res", "Filter_res", 71, 15, 1) // Same as nrpc filter resonance control, Believed undocumented until
-// sc-8850/20.
-defctrl("attack", "Attack", 73, 15, 1) // Same as attack rate nrpc.
-defctrl("release", "Release", 72, 15, 1) // Same as release rate nrpc.
-
-all_sound_off = 'ctrl(120,0)'
-reset_all_ctrls = 'ctrl(121,0)'
-
-/* NRPCs */
-def(vib_rate, "i")    {nrpc(0x0108, $1 + 64)}	// vibrato rate (-64 - 63) 
-def(vib_depth, "i")   {nrpc(0x0109, $1 + 64)}	// vibrato depth (-64 - 63) 
-def(vib_delay, "i")   {nrpc(0x010a, $1 + 64)}	// vibrato delay (-64 - 63) 
-def(tvf_cutoff, "i")  {nrpc(0x0120, $1 + 64)}	// TVF cutoff freq (-64 - 63) 
-def(tvf_reso, "i")    {nrpc(0x0121, $1 + 64)}	// TVF resonance (-64 - 63) 
-def(env_attack, "i")  {nrpc(0x0163, $1 + 64)}	// envelope attack (-64 - 63) 
-def(env_decay, "i")   {nrpc(0x0164, $1 + 64)}	// envelope decay (-64 - 63) 
-// set per-note drums parameters   (ex.) drums_pitch(drums_no(BD), 10)
-def(drums_pitch, "ii") {nrpc(0x1800 + $1, $2 + 64)} // drums pitch (-64 - 63) 
-def(drums_level, "ii") {nrpc(0x1a00 + $1, $2)}  // drums level (0-127)
-def(drums_pan, "ii")   {nrpc(0x1c00 + $1, $2)}  // drums pan (1-127, 0 for rnd)
-def(drums_reverb, "ii"){nrpc(0x1d00 + $1, $2)}	// drums reverb (0-127)
-def(drums_chorus, "ii"){nrpc(0x1e00 + $1, $2)}	// drums chorus (0-127)
-def(drums_delay, "ii") {nrpc(0x1f00 + $1, $2)}	// drums delay (0-127)
-
-/* values for panpot control */
-left7 = 0
-left6 = 10
-left5 = 19
-left4 = 28
-left3 = 37
-left2 = 46
-left1 = 55
-center = 64
-right1  = 73
-right2  = 82
-right3  = 91
-right4  = 100 
-right5  = 109
-right6  = 118
-right7  = 127
-
-/*
- * xprog(prog_num, bank_num): extended program change
- */
-bank_num_lsb = 0
-
-def(bank, "i") {
-  ctrl(0, $1)
-  ctrl(32, bank_num_lsb)
-}
-
-def(xprog, "ii") {
-  bank($2)
-  prog($1)
-}
-
-sc55map = 'bank_num_lsb=1  bank(0)'
-sc88map = 'bank_num_lsb=2  bank(0)'
-
-
-// alternative to xprog, xprog2 takes either 2 or 3 args.
-// if 2 args, xprog2(fullBankNo, progNo)
-// else if 3 args, xprog2(bankMsb, bankLsb, progNo)
-// FullBannkNO is converted to msb and lsb with (fullBankNo/128, fullBankNo%128)
-// ProgNo is 0 based, not 1 based as with the prog macro.
-// This macro is a placeholder until gs_inst is updated to this format.
-
-def(xprog2, "ii:i")
-{
-  if ($# == 2)
-{
-ctrl(0, $1/128)
-ctrl(32, $1%128)
-prog($2+1)
-}
-else
-{
-ctrl(0, $1)
-ctrl(32, $2)
-prog($3+1)
-}
-}
-
-/*
  * initial bender range in semitones
  */
 init_bender_range = 2		// initial bender range is +-2 semitones
-
-/* 
- * GM system on
- */
-gm_system_on = 'excl(#(0x7e, 0x7f, 0x09, 0x01))'
 
 /*
  * GS-specific exclusive messages
@@ -140,6 +44,22 @@ def(gs_reset, "") {
 }
 def(sc88_mode_set, "i") {  // 0: single module mode  1: double module mode
   gs_excl(0x00007f, #($1))
+}
+
+/*
+ * Returns the appropriate representation of the ch register for a gs exclusive.
+ * 1-9 for channels 1 to 9, 0 for channel 10, and 10 through 15 for channels 11 to 16.
+*/
+
+def (gs_chan, "")
+{
+switch (ch)
+{
+case(1,2,3,4,5,6,7,8,9) { ch }
+case(10) { 0 }
+case(11,12,13,14,15,16) { ch-1 }
+default { error("Huh? How did we get here? \n") }
+}
 }
 
 /*
@@ -251,10 +171,11 @@ def(gs_chorus_to_reverb, "i") {
 gs_excl(0x40013f, #($1))
 }
 
-def(gs_chorus_to_delay, "i") {
+def(gs_chorus_to_delay, "i") { // sc-88 and above.
 gs_excl(0x400140, #($1))
 }
 
+// the following will only function on sc-88 and above.
 def(gs_set_delay, "i*")  { // gs_set_delay(macro, [, pre-lpf, time-cent,
 			   //   time-left, time-right, lev-cent, lev-left,
 			   //   lev-right, level, feedback, snd_to_rev] )
@@ -310,13 +231,14 @@ def(gs_set_eqlzer, "i*") { // gs_set_eqlzer(l-freq, l-gain, h-freq, h-gain)
   gs_excl(0x400200, $*)
 }
 
+// the following will only function on sc-88pro and above.
 def(gs_set_fx, "i*") { // fxTypeH, fxTypeL, dumby, fxp1, fxp2, fxp3... fxp20, sndToReverb, SndToChorus, sndToDelay.
   gs_excl(0x400300, $*)
 }
 
 // individual parameter controls
 def(gs_fx_type, "ii") { // fx type has both msb and lsb.
-gs_excl(0x400300, $*)
+gs_excl(0x400300, #($1, $2))
 }
 
 // gs_fx_param(paramNo, value) - specify each parameter individually.
@@ -335,6 +257,12 @@ gs_excl(0x400318, #($1))
 def(gs_fx_to_delay, "i") {
 gs_excl(0x400319, #($1))
 }
+
+// switch insertion effect on for the specified channel in the ch register.
+gs_fx_on = 'gs_excl(0x404022 + gs_chan() shl 8, #(1))'
+
+// switch insertion effect off for the specified channel in the ch register.
+gs_fx_off = 'gs_excl(0x404022 + gs_chan() shl 8, #(0))'
 
 /* 
  * display string on the LCD panel
@@ -390,22 +318,6 @@ def(gs_display_time, "i") {  // gs_display_time(time)
   gs_excl(0x102001, #($1))
 }
 
-/*
-Returns the appropriate representation of the ch register for a gs exclusive.
-1-9 for channels 1 to 9, 0 for channel 10, and 10 through 15 for channels 11 to 16.
-*/
-
-def (gs_chan, "")
-{
-switch (ch)
-{
-case(1,2,3,4,5,6,7,8,9) { ch }
-case(10) { 0 }
-case(11,12,13,14,15,16) { ch-1 }
-default { error("Huh? How did we get here? \n") }
-}
-}
-
 /* Set the specified channel in the ch register to the given drum map.
 0 for melody, 1 or 2 for specified drum map.
 */
@@ -415,10 +327,12 @@ def (gs_drum_map, "i")
 gs_excl(0x401015 + (gs_chan() shl 8), #($1))
 }
 
-/*
- * include instrument name file
- */
-include("gs_inst")
+def (gs_sc_map, "i") {
+for ($i, 1, 16) {
+ch=$i
+gs_excl(0x404001 + (gs_chan() shl 8), #($1))
+}
+}
 
 /*
  * include rhythmic instrument name file
