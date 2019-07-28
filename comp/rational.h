@@ -40,10 +40,17 @@ typedef struct rational {
     short  num;			/* numerator */
     short  den;			/* denominator */
 #else
+	#if defined(__x86_64)
+    int  num;			/* numerator */
+    int  den;			/* denominator */
+    int  intg;		/* integer part */
+    unsigned int  type;	/* must be O_RATIONAL */
+	#else
     short  num;			/* numerator */
     short  den;			/* denominator */
     short  intg;		/* integer part */
     unsigned short  type;	/* must be O_RATIONAL */
+	#endif
 #endif
 } Rational;
 

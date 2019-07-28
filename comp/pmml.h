@@ -84,7 +84,7 @@
 #    if defined(mc68000) || defined(sparc) || defined(MIPSEB)
 #      define PMML_BIG_ENDIAN  1
 #    else
-#      if defined(i386) || defined(MIPSEL) || defined(alpha)
+#      if defined(i386) || defined(__x86_64__) || defined(MIPSEL) || defined(alpha)
 #        define PMML_BIG_ENDIAN  0
 #      else
          ... Either PMML_BIG_ENDIAN or PMML_LITTLE_ENDIAN must be defined.
@@ -121,7 +121,7 @@ typedef double PmmlFloat;
  * Object - the data type of the PMML
  *   Each macro is associated with an object.
  *   Each array element is an object.
- *   Each object occupies 8 bytes.
+ *   Each object occupies 8 bytes (16 bytes on 64-bit systems).
  */
 /* Objects other than floating numbers are represented
    by 'NaN' of the IEEE floating point format. */
@@ -150,10 +150,17 @@ typedef union object {
 	short  pad2;
 	short  pad3;
 #else
+	#if defined(__x86_64__)
+	int  pad1;
+	int  pad2;
+	int  pad3;
+	unsigned int  type;	/* O_XXX */
+#else
 	short  pad1;
 	short  pad2;
 	short  pad3;
 	unsigned short  type;	/* O_XXX */
+	#endif
 #endif
     } _t;
 
@@ -181,7 +188,11 @@ typedef union object {
 
     /* used only in the 'arg' member of MacroCall */
     struct {
+#if defined(__x86_64__)
+	long  defined;
+#else
 	int  defined;
+#endif
 	struct dic_ent  *dp;
     } id;
 } Object;

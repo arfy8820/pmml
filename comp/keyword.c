@@ -1,7 +1,7 @@
+#include <stddef.h>
 /* ANSI-C code produced by gperf version 3.1 */
 /* Command-line: gperf -D -p -t -G  */
 /* Computed positions: -k'1,3,$' */
-#include <stddef.h>
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
       && ('%' == 37) && ('&' == 38) && ('\'' == 39) && ('(' == 40) \
@@ -120,8 +120,7 @@ struct keyword wordlist[] =
     {"del_eff_etypes", T_DEL_EFF_ETYPES},
     {"tempo", T_TEMPO},
     {"add_eff_chs", T_ADD_EFF_CHS},
-    {"gt", T_DU
-},
+    {"gt", T_DU},
     {"xor", T_XOR},
     {"add_eff_etypes", T_ADD_EFF_ETYPES},
     {"undef", T_UNDEF},
@@ -137,8 +136,7 @@ struct keyword wordlist[] =
     {"for", T_FOR},
     {"elsif", T_ELSIF},
     {"signal", T_SIGNAL},
-    {"gr", T_DR
-},
+    {"gr", T_DR},
     {"o", T_O},
     {"ac", T_AC},
     {"end", T_END},
