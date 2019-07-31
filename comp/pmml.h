@@ -112,7 +112,7 @@
  ********************************************************************/
 
 typedef unsigned char  uchar;
-typedef long   PmmlInt;
+typedef int   PmmlInt;
 typedef double PmmlFloat;
 
 #include "rational.h"
@@ -121,7 +121,7 @@ typedef double PmmlFloat;
  * Object - the data type of the PMML
  *   Each macro is associated with an object.
  *   Each array element is an object.
- *   Each object occupies 8 bytes (16 bytes on 64-bit systems).
+ *   Each object occupies 8 bytes.
  */
 /* Objects other than floating numbers are represented
    by 'NaN' of the IEEE floating point format. */
@@ -150,17 +150,10 @@ typedef union object {
 	short  pad2;
 	short  pad3;
 #else
-	#if defined(__x86_64__)
-	int  pad1;
-	int  pad2;
-	int  pad3;
-	unsigned int  type;	/* O_XXX */
-#else
 	short  pad1;
 	short  pad2;
 	short  pad3;
 	unsigned short  type;	/* O_XXX */
-	#endif
 #endif
     } _t;
 
@@ -188,11 +181,7 @@ typedef union object {
 
     /* used only in the 'arg' member of MacroCall */
     struct {
-#if defined(__x86_64__)
-	long  defined;
-#else
 	int  defined;
-#endif
 	struct dic_ent  *dp;
     } id;
 } Object;
