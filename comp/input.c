@@ -26,6 +26,7 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <errno.h>
+#include <string.h>
 #include "pmml.h"
 
 /*
@@ -354,7 +355,7 @@ int  do_search_path;	/* if true, PMMLPATH is consulted */
 	}
 	if( (fd = open(newfname, O_RDONLY)) == -1 ) {
 	    error(cur_srcpos, "%s: Cannot open (%s)", 
-		  "%s: オープンできません (%s)", newfname, sys_errlist[errno]);
+		  "%s: オープンできません (%s)", newfname, strerror(errno));
 	}
     }
 
@@ -717,7 +718,7 @@ struct ibuffer  *ip;
     n = read(ip->fd, ip->base + 1, PMML_BUFSIZ);
     if( n == -1 ) {	/* maybe I/O error */
 	error(ip->src_pos, "Source file read error (%s)", 
-	      "ソースファイル読み取りエラー (%s)", sys_errlist[errno]);
+	      "ソースファイル読み取りエラー (%s)", strerror(errno));
     } else if( !n ) {	/* EOF reached */
 	ip->eof = 1;
 	return EOF;

@@ -33,6 +33,7 @@
 #  include <stdarg.h>
 #endif
 #include <errno.h>
+#include <string.h>
 #include "pmml.h"
 #include "../common/smf.h"
 		    
@@ -264,10 +265,10 @@ char  *fname;
     default:
 	if( japan ) {
 	    fprintf(stderr, "%s: MIDIファイル入出力エラー (%s)\n",
-		    fname, sys_errlist[errno]);
+		    fname, strerror(errno));
 	} else {
 	    fprintf(stderr, "%s: MIDI file I/O error (%s)\n",
-		    fname, sys_errlist[errno]);
+		    fname, strerror(errno));
 	}
 	break;
     }
