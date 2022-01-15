@@ -25,6 +25,7 @@
 
 #define STR_BLKSIZ  32	    /* block size for dynamically-growing string */
 
+extern void err_nomem(char*);
 static int find_extension P((char *, int));
 
 /*  

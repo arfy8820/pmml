@@ -368,7 +368,7 @@ Token  *tp;
     while( (tp = get_token())->type != '\'' ) {
 	if( tp->type == T_EOF ) {
 	    error(src_pos1, "Closing single quote is not found",
-		  "ÂĞ±ş¤¹¤ë¥·¥ó¥°¥ë¥¯¥ª¡¼¥È(')¤¬¤¢¤ê¤Ş¤»¤ó");
+		  "å¯¾å¿œã™ã‚‹ã‚·ãƒ³ã‚°ãƒ«ã‚¯ã‚ªãƒ¼ãƒˆ(')ãŒã‚ã‚Šã¾ã›ã‚“");
 	}
 	*nextp = copy_token(tp);
 	nextp = &(*nextp)->next;
@@ -398,7 +398,7 @@ Token  *tp;
     while( (tp = parse_cmds(ARGS_ONLY))->type != '`' ) {
 	if( tp->type == T_EOF ) {
 	    error(src_pos1, "Closing back quote is not found",
-		  "ÂĞ±ş¤¹¤ë¥Ğ¥Ã¥¯¥¯¥ª¡¼¥È(`)¤¬¤¢¤ê¤Ş¤»¤ó");
+		  "å¯¾å¿œã™ã‚‹ãƒãƒƒã‚¯ã‚¯ã‚ªãƒ¼ãƒˆ(`)ãŒã‚ã‚Šã¾ã›ã‚“");
 	}
 	*nextp = copy_token(tp);
 	nextp = &(*nextp)->next;
@@ -1409,7 +1409,7 @@ void
 op_fatal()
 {
     error(cur_srcpos,
-	  "Internal error (get_expression)", "ÆâÉô¥¨¥é¡¼(get_expression)");
+	  "Internal error (get_expression)", "å†…éƒ¨ã‚¨ãƒ©ãƒ¼(get_expression)");
 }
 
 static void
@@ -1425,7 +1425,7 @@ op_error()
 	op_badopd();
     } else {
 	terror(cur_srcpos, &token, "Operand type mismatch", 
-	       "±é»»¿ô¤Î·¿¤¬¹ç¤Ã¤Æ¤¤¤Ş¤»¤ó");
+	       "æ¼”ç®—æ•°ã®å‹ãŒåˆã£ã¦ã„ã¾ã›ã‚“");
     }
 }
 
@@ -1435,7 +1435,7 @@ op_badopd()
     Token  token;
     token.type = optr_stack[optr_n].op;
     terror(cur_srcpos, &token, "Illegal operand type", 
-	       "±é»»¿ô¤Î·¿¤¬ÉÔÅ¬Åö¤Ç¤¹");
+	       "æ¼”ç®—æ•°ã®å‹ãŒä¸é©å½“ã§ã™");
 }
 
 static void
@@ -1443,7 +1443,7 @@ op_divzero()
 {
     Token  token;
     token.type = optr_stack[optr_n].op;
-    terror(cur_srcpos, &token, "Division by zero", "£°¤Ë¤è¤ë½ü»»");
+    terror(cur_srcpos, &token, "Division by zero", "ï¼ã«ã‚ˆã‚‹é™¤ç®—");
 }
 
 /*********************************************************************

@@ -27,6 +27,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 #include "pmml.h"
 
 /*
@@ -350,12 +351,12 @@ int  do_search_path;	/* if true, PMMLPATH is consulted */
 	}
 	if( exist == -1 ) {
 	    error(cur_srcpos, "%s: No such file", 
-		  "%s: ¥Õ¥¡¥¤¥ë¤¬¸«¤Ä¤«¤ê¤Þ¤»¤ó",
+		  "%s: ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“",
 		  attach_extension(fname, SRC_EXT));
 	}
 	if( (fd = open(newfname, O_RDONLY)) == -1 ) {
 	    error(cur_srcpos, "%s: Cannot open (%s)", 
-		  "%s: ¥ª¡¼¥×¥ó¤Ç¤­¤Þ¤»¤ó (%s)", newfname, strerror(errno));
+		  "%s: ã‚ªãƒ¼ãƒ—ãƒ³ã§ãã¾ã›ã‚“ (%s)", newfname, strerror(errno));
 	}
     }
 
@@ -718,7 +719,7 @@ struct ibuffer  *ip;
     n = read(ip->fd, ip->base + 1, PMML_BUFSIZ);
     if( n == -1 ) {	/* maybe I/O error */
 	error(ip->src_pos, "Source file read error (%s)", 
-	      "¥½¡¼¥¹¥Õ¥¡¥¤¥ëÆÉ¤ß¼è¤ê¥¨¥é¡¼ (%s)", strerror(errno));
+	      "ã‚½ãƒ¼ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿å–ã‚Šã‚¨ãƒ©ãƒ¼ (%s)", strerror(errno));
     } else if( !n ) {	/* EOF reached */
 	ip->eof = 1;
 	return EOF;
@@ -752,7 +753,7 @@ _pb_alloc()
     pb_nallocated += PBS_BLKSIZ;
     if( !already_warnned && pb_nallocated > PBS_WARN ) {
 	warn(cur_srcpos, "Macro expansion level exceeds %d",
-	     "¥Þ¥¯¥íÅ¸³«¥ì¥Ù¥ë¤¬ %d ¤ò±Û¤¨¤Þ¤·¤¿", PBS_WARN);
+	     "ãƒžã‚¯ãƒ­å±•é–‹ãƒ¬ãƒ™ãƒ«ãŒ %d ã‚’è¶Šãˆã¾ã—ãŸ", PBS_WARN);
 	already_warnned = 1;
     }
 
@@ -821,7 +822,7 @@ struct ibuffer  *ip;
 	}
 	if( state >= AFTER_INT ) {
 	    error(ip->src_pos, "'%c' is not a valid length name", 
-		  "'%c' ¤ÏÄ¹¤µµ­¹æ¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó", c);
+		  "'%c' ã¯é•·ã•è¨˜å·ã§ã¯ã‚ã‚Šã¾ã›ã‚“", c);
 	}
 	addchar(ip->strbuf, c);
 	while( (c = GetC(ip)) == 'b' ) {
@@ -842,7 +843,7 @@ struct ibuffer  *ip;
 	    if( state == AFTER_OCT ) {
 		addchar(ip->strbuf, c);  addchar(ip->strbuf, 0);
 		error(ip->src_pos, "Bad pitch specifier '%s'", 
-		      "²»¹â»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Þ¤¹ '%s'", ip->strbuf.buf);
+		      "éŸ³é«˜æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™ '%s'", ip->strbuf.buf);
 	    }
 	    goto identifier;
 	}
@@ -903,7 +904,7 @@ struct ibuffer  *ip;
       rational_const:
 	if( state == AFTER_OCT ) {
 	    error(ip->src_pos, "Identifer can not be prefixed by '_' or '^'",
-		  "Ì¾Á°¤ò '_' ¤Þ¤¿¤Ï '^' ¤Ç»Ï¤á¤ë¤³¤È¤Ï¤Ç¤­¤Þ¤»¤ó");
+		  "åå‰ã‚’ '_' ã¾ãŸã¯ '^' ã§å§‹ã‚ã‚‹ã“ã¨ã¯ã§ãã¾ã›ã‚“");
 	}
 	addchar(ip->strbuf, c);
 
@@ -919,7 +920,7 @@ struct ibuffer  *ip;
 		if( state >= AFTER_INT ) {
 		    addchar(ip->strbuf, c);  addchar(ip->strbuf, 0);
 		    error(ip->src_pos, "Bad rational constant '%s'", 
-			  "Í­Íý¿ôÄê¿ô¤¬´Ö°ã¤Ã¤Æ¤¤¤Þ¤¹ '%s'", ip->strbuf.buf);
+			  "æœ‰ç†æ•°å®šæ•°ãŒé–“é•ã£ã¦ã„ã¾ã™ '%s'", ip->strbuf.buf);
 		} 
 		goto identifier;
 	    } else break;
@@ -951,10 +952,10 @@ struct ibuffer  *ip;
     case 'P': case 'T': case 'V': case 'X': case 'Y':
 	if( state >= AFTER_INT ) {
 	    error(ip->src_pos, "'%c' is not a valid length name", 
-		  "'%c' ¤ÏÄ¹¤µµ­¹æ¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó", c);
+		  "'%c' ã¯é•·ã•è¨˜å·ã§ã¯ã‚ã‚Šã¾ã›ã‚“", c);
 	} else if( state == AFTER_OCT ) {
 	    error(ip->src_pos, "Identifer can not be prefixed by '_' or '^'",
-		  "Ì¾Á°¤ò '_' ¤Þ¤¿¤Ï '^' ¤Ç»Ï¤á¤ë¤³¤È¤Ï¤Ç¤­¤Þ¤»¤ó");
+		  "åå‰ã‚’ '_' ã¾ãŸã¯ '^' ã§å§‹ã‚ã‚‹ã“ã¨ã¯ã§ãã¾ã›ã‚“");
 	} 
 	goto identifier;
 
@@ -1143,7 +1144,7 @@ struct ibuffer  *ip;
 	while( (c = GetC(ip)) != '"' ) {
 	    if( c == '\n' || c == EOF ) {
 		error(ip->src_pos, "Newline in string constant",
-		      "Ê¸»úÎóÄê¿ô¤ÎÃæ¤Ë²þ¹Ô¤¬´Þ¤Þ¤ì¤Æ¤¤¤Þ¤¹");
+		      "æ–‡å­—åˆ—å®šæ•°ã®ä¸­ã«æ”¹è¡ŒãŒå«ã¾ã‚Œã¦ã„ã¾ã™");
 	    } else if( c == '\\' ) {
 		c = GetC(ip); 
 		if( c >= '0' && c <= '7' ) {
@@ -1223,7 +1224,7 @@ struct ibuffer  *ip;
 	if( (c = GetC(ip)) == '=' )  tp->type = T_MULTEQ;
 	else if( c == '/' ) {
 	    error(ip->src_pos, "'*/': Corresponding '/*' is not found",
-		  " '*/' ¤ËÂÐ±þ¤¹¤ë '/*' ¤¬¤¢¤ê¤Þ¤»¤ó");
+		  " '*/' ã«å¯¾å¿œã™ã‚‹ '/*' ãŒã‚ã‚Šã¾ã›ã‚“");
 	} else { UnGetC(ip); tp->type = '*'; }
 	break;
 
@@ -1251,7 +1252,7 @@ struct ibuffer  *ip;
 		}
 	    } while( c != EOF );
 	    error(src_pos1, "'/*': Closing '*/' is not found",
-		  " '/*' ¤ËÂÐ±þ¤¹¤ë '*/' ¤¬¤¢¤ê¤Þ¤»¤ó");
+		  " '/*' ã«å¯¾å¿œã™ã‚‹ '*/' ãŒã‚ã‚Šã¾ã›ã‚“");
 	    goto again;
 	case '=':
 	    tp->type = T_DIVEQ;
@@ -1318,7 +1319,7 @@ struct ibuffer  *ip;
 	} else if( iscntrl(c) ) {
 	    error(ip->src_pos, 
 		  "Illegal character in the input file (char_code=0x%02x)",
-		  "ÆþÎÏ¥Õ¥¡¥¤¥ëÃæ¤ËÉÔÅ¬ÀÚ¤ÊÊ¸»ú¤¬´Þ¤Þ¤ì¤Æ¤¤¤Þ¤¹(¥³¡¼¥É=0x%02x)", c);
+		  "å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«ä¸­ã«ä¸é©åˆ‡ãªæ–‡å­—ãŒå«ã¾ã‚Œã¦ã„ã¾ã™(ã‚³ãƒ¼ãƒ‰=0x%02x)", c);
 	}
 	tp->type = c;
 	break;

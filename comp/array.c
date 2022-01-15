@@ -364,7 +364,7 @@ Array  *ap;
 #endif
     if( ap->ng_flag ) {
 	error(cur_srcpos, "Can not increase the size of '$*' or message array",
-	      "'$*' ¤Þ¤¿¤Ï¥á¥Ã¥»¡¼¥¸ÇÛÎó¤Î¥µ¥¤¥º¤ò³ÈÂç¤¹¤ë¤³¤È¤Ï¤Ç¤­¤Þ¤»¤ó");
+	      "'$*' ã¾ãŸã¯ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é…åˆ—ã®ã‚µã‚¤ã‚ºã‚’æ‹¡å¤§ã™ã‚‹ã“ã¨ã¯ã§ãã¾ã›ã‚“");
     }
 
     if( (asize = ap->alloc_size) < 0 ) { /* no append/insert is applied yet */

@@ -36,6 +36,7 @@ extern int  trace_level;
  */
 static void  err_calls P((void));
 static void  print_trace P((char *, MacroCall *, Object *));
+extern int do_eof();
 
 /*
  * macros
@@ -62,7 +63,7 @@ identifier()
     MacroCall *mp;
 
     if( (is_defined = get_id(SD_ANY, DEF_ON_UNDEF, &dp)) == -1 ) {
-	error(cur_srcpos, "Inappropriate identifier", "Ì¾Á°¤¬ÉÔÅ¬ÀÚ¤Ç¤¹");
+	error(cur_srcpos, "Inappropriate identifier", "åå‰ãŒä¸é©åˆ‡ã§ã™");
     }
     assign_type = probe_next_token()->type;
 
@@ -96,7 +97,7 @@ identifier()
     } else {
 	if( !is_defined ) {
 	    error(cur_srcpos, "Undefined macro '%s'",
-		  "'%s' ¤¬ÄêµÁ¤µ¤ì¤Æ¤¤¤Ş¤»¤ó", dp->name);
+		  "'%s' ãŒå®šç¾©ã•ã‚Œã¦ã„ã¾ã›ã‚“", dp->name);
 	}
 
 	if( tkinfo[assign_type].flags & F_CA ) {
@@ -106,7 +107,7 @@ identifier()
 	    if( (dp->type != D_LocalMacro && dp->type != D_ThreadMacro) || 
 	       dp->dic_arg_spec || !isleftval(dp->dic_obj.o_type) ) {
 		error(cur_srcpos, "%s: Illegal left value",
-		      "%s: º¸ÊÕ¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹", dp->name);
+		      "%s: å·¦è¾ºãŒé–“é•ã£ã¦ã„ã¾ã™", dp->name);
 	    }
 	    get_token();	/* skip assignment operator */
 	    op = _get_expression(assign_type, &dp->dic_obj);
@@ -200,7 +201,7 @@ identifier()
 
 	case D_Channel:
 	    error(cur_srcpos, "Parse error near `%s'", 
-		  "`%s' ¤ÎÉÕ¶á¤ËÊ¸Ë¡¤Î¸í¤ê¤¬¤¢¤ê¤Ş¤¹", dp->name);
+		  "`%s' ã®ä»˜è¿‘ã«æ–‡æ³•ã®èª¤ã‚ŠãŒã‚ã‚Šã¾ã™", dp->name);
 	    break;
 	}
     }
@@ -255,7 +256,7 @@ MacroCall  *mp;
 	    if( dp->active ) {
 		error(mp->src_pos, 
 		      "Failed to delete local macro `%s' of macro `%s' due to extra reference (See manual for details)",
-		      "¥í¡¼¥«¥ë¥Ş¥¯¥í`%s'¡Ê¥Ş¥¯¥í'%s'Æâ¡Ë¤ÏÂ¾¤«¤é¤Î»²¾È¤¬¤¢¤ë¤¿¤á¾Ãµî¤Ç¤­¤Ş¤»¤ó¡Ê¾ÜºÙ¤Ï¥Ş¥Ë¥å¥¢¥ë»²¾È¡Ë",
+		      "ãƒ­ãƒ¼ã‚«ãƒ«ãƒã‚¯ãƒ­`%s'ï¼ˆãƒã‚¯ãƒ­'%s'å†…ï¼‰ã¯ä»–ã‹ã‚‰ã®å‚ç…§ãŒã‚ã‚‹ãŸã‚æ¶ˆå»ã§ãã¾ã›ã‚“ï¼ˆè©³ç´°ã¯ãƒãƒ‹ãƒ¥ã‚¢ãƒ«å‚ç…§ï¼‰",
 		      dp->name, mp->macro->name);
 	    }
 	    delete_dict(dp);
@@ -295,7 +296,7 @@ array_subscript()
 	if( !(op = get_expression()) )  parse_error(cur_token);
 	if( !isnumber(op->o_type) || get_token()->type != ']' ) { 
 	    error(cur_srcpos, "Parse error in array subscript",
-		       "ÇÛÎó¤ÎÅº»ú¤Ë´Ö°ã¤¤¤¬¤¢¤ê¤Ş¤¹");
+		       "é…åˆ—ã®æ·»å­—ã«é–“é•ã„ãŒã‚ã‚Šã¾ã™");
 	}
 
 	/* subscript range check */
@@ -309,7 +310,7 @@ array_subscript()
 	i--;	/* array subscript starts with 1 */
 	if( i < 0 || i >= ap->size ) {
 	    error(cur_srcpos, "Subscript out of range (value = %d)",
-		   "ÇÛÎó¤ÎÅº»ú¤¬ÈÏ°Ï³°¤Ç¤¹ (Åº»úÃÍ = %d)", i+1);
+		   "é…åˆ—ã®æ·»å­—ãŒç¯„å›²å¤–ã§ã™ (æ·»å­—å€¤ = %d)", i+1);
 	}
 
 	assign_type = probe_next_token()->type;
@@ -326,7 +327,7 @@ array_subscript()
 	    op = &array_ref(ap, i);
 	    if( !isleftval(op->o_type) ) {
 		error(cur_srcpos, "Illegal type of left value",
-		      "º¸ÊÕÃÍ¤Î·¿¤¬°ã¤¤¤Ş¤¹");
+		      "å·¦è¾ºå€¤ã®å‹ãŒé•ã„ã¾ã™");
 	    }
 	    get_token();
 	    op1 = _get_expression(assign_type, op);
@@ -373,7 +374,7 @@ number_sign()
 	src_pos1 = cur_srcpos;
 	if( (tp = parse_cmds(MACRO_CMDS))->type != T_ARRAY ) {
 	    error(src_pos1, "Missing array after #",
-		   "# ¤Î¼¡¤¬ÇÛÎó¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó");
+		   "# ã®æ¬¡ãŒé…åˆ—ã§ã¯ã‚ã‚Šã¾ã›ã‚“");
 	}
 	sz = tp->u.obj.o_ap->size;	/* this must be saved */
 	free_array(tp->u.obj.o_ap);
@@ -397,7 +398,7 @@ at_mark()
     src_pos1 = cur_srcpos;
     if( (tp = parse_cmds(MACRO_CMDS))->type != T_ARRAY ) {
 	error(src_pos1, "Missing array after @",
-	       "@ ¤Î¼¡¤¬ÇÛÎó¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó");
+	       "@ ã®æ¬¡ãŒé…åˆ—ã§ã¯ã‚ã‚Šã¾ã›ã‚“");
     }
     ap = tp->u.obj.o_ap;
 
@@ -466,7 +467,7 @@ dollar_sign()
 	    if( tp->u.obj.o_type != O_INT || (i = tp->u.obj.o_val) < 1 || 
 	       i > cur_thd->pb->calls->maxargs ) {
 		error(cur_srcpos, "$%d: Illegal argument reference",
-		      "$%d: ÉÔÀµ¤Ê°ú¿ô»²¾È¤Ç¤¹", i);
+		      "$%d: ä¸æ­£ãªå¼•æ•°å‚ç…§ã§ã™", i);
 	    } else if( i > cur_thd->pb->calls->arg_array->size ) {
 		/* ignore it! */
 	    } else {
@@ -483,7 +484,7 @@ dollar_sign()
 	    if( !(op = get_expression()) )  parse_error(cur_token);
 	    if( !isnumber(op->o_type) || get_token()->type != ']' ) { 
 		error(cur_srcpos, "Parse error in array subscript",
-		      "ÇÛÎó¤ÎÅº»ú¤Ë´Ö°ã¤¤¤¬¤¢¤ê¤Ş¤¹");
+		      "é…åˆ—ã®æ·»å­—ã«é–“é•ã„ãŒã‚ã‚Šã¾ã™");
 	    }
 
 	    if( op->o_type != O_INT ) {
@@ -496,7 +497,7 @@ dollar_sign()
 
 	    if( i < 1 || i > cur_thd->pb->calls->maxargs ) {
 		error(cur_srcpos, "$[]: Subscript out of range (value = %d)",
-		      "$[]: ÇÛÎó¤ÎÅº»ú¤¬ÈÏ°Ï³°¤Ç¤¹ (Åº»úÃÍ = %d)", i);
+		      "$[]: é…åˆ—ã®æ·»å­—ãŒç¯„å›²å¤–ã§ã™ (æ·»å­—å€¤ = %d)", i);
 	    } else if( i > cur_thd->pb->calls->arg_array->size ) {
 		/* ignore it! */
 	    } else {
@@ -542,7 +543,7 @@ do_def()
     if( mp->nargs == 2 ) {
 	if( !valid_arg_spec(arg_spec = mp->arg[1].o_str) ) {
 	    error(cur_srcpos, "%s: Incorrect argument specifier",
-		  "%s: °ú¿ô»ÅÍÍ¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹", cmdname);
+		  "%s: å¼•æ•°ä»•æ§˜ãŒé–“é•ã£ã¦ã„ã¾ã™", cmdname);
 	}
     } else  arg_spec = DEF_ARG_SPEC;
     dp = mp->arg[0].id.dp;
@@ -577,7 +578,7 @@ do_undef()
     } else {
 	if( dp->type == D_ThreadName && dp->dic_thd == root_thd ) {
 	    error(cur_srcpos, "undef: Can not delete the root thread",
-		  "undef: ¥ë¡¼¥È¥¹¥ì¥Ã¥É¤ò¾Ãµî¤¹¤ë¤³¤È¤Ï¤Ç¤­¤Ş¤»¤ó¡£");
+		  "undef: ãƒ«ãƒ¼ãƒˆã‚¹ãƒ¬ãƒƒãƒ‰ã‚’æ¶ˆå»ã™ã‚‹ã“ã¨ã¯ã§ãã¾ã›ã‚“ã€‚");
 	}
 	unlink_dnext_link(dp);
 	delete_dict(dp);
@@ -731,7 +732,7 @@ do_switch()
     mp = scan_args("e", "switch");
 
     if( get_token()->type != '{' ) {
-	error(cur_srcpos, "switch: Missing '{'", "switch: '{' ¤¬¤¢¤ê¤Ş¤»¤ó");
+	error(cur_srcpos, "switch: Missing '{'", "switch: '{' ãŒã‚ã‚Šã¾ã›ã‚“");
     }
 
     while( (tp = get_token())->type != '}' ) {
@@ -795,7 +796,7 @@ do_while()
     free_object(op);
     if( get_token()->type != ')' ) {
 	error(cur_srcpos, "while: Bad conditional expression",
-	      "while: ¾ò·ï¼°¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹");
+	      "while: æ¡ä»¶å¼ãŒé–“é•ã£ã¦ã„ã¾ã™");
     }	
     
     if( true ) {
@@ -838,7 +839,7 @@ int  flags;
 	free_object(op);
 	if( get_token()->type != ')' ) {
 	    error(cur_srcpos, "while: Bad conditional expression",
-		   "while: ¾ò·ï¼°¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹");
+		   "while: æ¡ä»¶å¼ãŒé–“é•ã£ã¦ã„ã¾ã™");
 	}	
 	
 	if( true ) {
@@ -875,7 +876,7 @@ do_for()
     loop_tok.u.efor.limit = mp->arg[2].o_val;
     loop_tok.u.efor.step = mp->nargs == 4 ? mp->arg[3].o_val : 1;
     if( loop_tok.u.efor.step == 0 ) {
-	error(cur_srcpos, "for: Zero step value", "for: ¥¹¥Æ¥Ã¥×ÃÍ¤¬£°¤Ç¤¹");
+	error(cur_srcpos, "for: Zero step value", "for: ã‚¹ãƒ†ãƒƒãƒ—å€¤ãŒï¼ã§ã™");
     }
     dp = mp->arg[0].id.dp;
     free(mp);
@@ -1078,7 +1079,7 @@ do_break()
 
     if( level > cur_thd->pb->loop_count ) {
 	error(cur_srcpos, "break: No target loops",
-	     "break: ÂĞ¾İ¤È¤Ê¤ë¥ë¡¼¥×¤¬¤¢¤ê¤Ş¤»¤ó");
+	     "break: å¯¾è±¡ã¨ãªã‚‹ãƒ«ãƒ¼ãƒ—ãŒã‚ã‚Šã¾ã›ã‚“");
     }
 
     while( --level >= 0 ) {
@@ -1088,7 +1089,7 @@ do_break()
 	    if( tp->type == T_EOF ) {
 		if( do_eof() == 1 ) {
 		    error(cur_srcpos, "break: Internal error (Unexpected EOF)",
-			  "break: ÆâÉô¥¨¥é¡¼ (Unexpected EOF)");
+			  "break: å†…éƒ¨ã‚¨ãƒ©ãƒ¼ (Unexpected EOF)");
 		}
 	    }
 	} while( !(tkinfo[tp->type].flags & F_EOL) );
@@ -1181,7 +1182,7 @@ static void
 err_calls()
 {
     error(cur_srcpos, "Argument reference on the top level",
-	  "¥È¥Ã¥×¥ì¥Ù¥ë¤Ç¤Î°ú¿ô»²¾È¤Ï¤Ç¤­¤Ş¤»¤ó");
+	  "ãƒˆãƒƒãƒ—ãƒ¬ãƒ™ãƒ«ã§ã®å¼•æ•°å‚ç…§ã¯ã§ãã¾ã›ã‚“");
 }
 
 /*
@@ -1198,7 +1199,7 @@ FILE  *fp;
     for(th = cur_thd; th != NULL; th = th->parent) {
 	for( mp = th->pb->calls; mp != NULL; mp = mp->next ) {
 	    if( first ) {
-		fprintf(fp, japan ? "\n*** ¥Ş¥¯¥í¤Î¸Æ¤Ó½Ğ¤·²áÄø ***\n" :
+		fprintf(fp, japan ? "\n*** ãƒã‚¯ãƒ­ã®å‘¼ã³å‡ºã—éç¨‹ ***\n" :
 			"\n*** Macro Calling History ***\n");
 		first = 0;
 	    }

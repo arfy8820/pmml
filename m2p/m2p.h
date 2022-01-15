@@ -94,6 +94,7 @@
  */
 #define RHYTHM_CH    (10 - 1)
 
+
 /********************************************************************
  * Type definitions
  ********************************************************************/
@@ -208,6 +209,8 @@ typedef struct event_seq {
 				   applied to the events in this sequence */
 } EventSeq;
     
+extern void line_fit(EventSeq *eseq, int maxtmstep, float tolerance);
+
 typedef struct track {
     EventSeq *eseq;		/* ptr to the list of event sequences 
 				   (This keeps all kinds of events before

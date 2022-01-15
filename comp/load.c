@@ -96,7 +96,7 @@ Rational  *end_time;	/* (Output) End time of loaded track */
     slot = open_midi_file(fname);
     if( track < 1 || track > slot->ntrk ) {
 	error(cur_srcpos, "%s: Track %d does not exist",
-	      "%s: '%d'ÈÖ¤Î¥È¥é¥Ã¥¯¤ÏÂ¸ºß¤·¤Þ¤»¤ó",
+	      "%s: '%d'ç•ªã®ãƒˆãƒ©ãƒƒã‚¯ã¯å­˜åœ¨ã—ã¾ã›ã‚“",
 	      strcmp(slot->fname, "-") == 0 ? "stdin" : slot->fname, track);
     }
 
@@ -136,7 +136,7 @@ char  *fname;
     /* new file */
     if( !newslot ) {
 	error(cur_srcpos, "Too many MIDI files opened",
-	      "¥ª¡¼¥×¥óÃæ¤ÎMIDI¥Õ¥¡¥¤¥ë¤¬Â¿¤¹¤®¤Þ¤¹");
+	      "ã‚ªãƒ¼ãƒ—ãƒ³ä¸­ã®MIDIãƒ•ã‚¡ã‚¤ãƒ«ãŒå¤šã™ãŽã¾ã™");
     }
 
     newslot->fname = fn;
@@ -226,7 +226,7 @@ Rational  *end_time;	/* (Output) End time of loaded track */
     int	  tp = cur_thd->reg.tp;
 
     if( slot->division >= 8192 /* max reso of Rational / 4 */ ) {
-	error(cur_srcpos, "%s: Too high resolution", "%s: Ê¬²òÇ½¤¬¹â¤¹¤®¤Þ¤¹",
+	error(cur_srcpos, "%s: Too high resolution", "%s: åˆ†è§£èƒ½ãŒé«˜ã™ãŽã¾ã™",
 	      strcmp(slot->fname, "-") == 0 ? "stdin" : slot->fname);
     }
 
@@ -365,7 +365,7 @@ LoadSlot *slot;
 int  note;
 {
     warn(cur_srcpos, "%s: Note number out of range (note=%d)",
-	 "%s: ¥Î¡¼¥ÈÈÖ¹æ¤¬ÈÏ°Ï³°¤Ç¤¹ (note=%d)", 
+	 "%s: ãƒŽãƒ¼ãƒˆç•ªå·ãŒç¯„å›²å¤–ã§ã™ (note=%d)", 
 	 strcmp(slot->fname, "-") == 0 ? "stdin" : slot->fname, note);
 }
 
@@ -375,6 +375,6 @@ LoadSlot *slot;
 int  mtype;
 {
     warn(cur_srcpos, "%s: Ignored illegal meta event (meta_type=%d)",
-	 "%s: Ìµ¸ú¤Ê¥á¥¿¥¤¥Ù¥ó¥È¤òÌµ»ë¤·¤Þ¤¹ (meta_type=%d)", 
+	 "%s: ç„¡åŠ¹ãªãƒ¡ã‚¿ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç„¡è¦–ã—ã¾ã™ (meta_type=%d)", 
 	 strcmp(slot->fname, "-") == 0 ? "stdin" : slot->fname, mtype);
 }

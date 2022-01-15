@@ -84,7 +84,7 @@
 #    if defined(mc68000) || defined(sparc) || defined(MIPSEB)
 #      define PMML_BIG_ENDIAN  1
 #    else
-#      if defined(i386) || defined(__x86_64__) || defined(MIPSEL) || defined(alpha)
+#      if defined(i386) || defined(__x86_64__) || defined(__arm64) || defined(MIPSEL) || defined(alpha)
 #        define PMML_BIG_ENDIAN  0
 #      else
          ... Either PMML_BIG_ENDIAN or PMML_LITTLE_ENDIAN must be defined.

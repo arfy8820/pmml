@@ -430,7 +430,7 @@ int  argc;
 Object  *argv;
 {
     if( argv->fpval < 0 ) {
-	error(cur_srcpos, "sqrt: negative argument", "sqrt: °ú¿ô¤¬Éé¤Ç¤¹");
+	error(cur_srcpos, "sqrt: negative argument", "sqrt: å¼•æ•°ãŒè² ã§ã™");
     }
     pushbk_float(sqrt(argv->fpval));
 }
@@ -466,7 +466,7 @@ Object  *argv;
 {
     if( argv->fpval <= 0 ) {
 	error(cur_srcpos, "log: non-positive argument", 
-	      "log: °ú¿ô¤¬£°¤Ş¤¿¤ÏÉé¤Ç¤¹");
+	      "log: å¼•æ•°ãŒï¼ã¾ãŸã¯è² ã§ã™");
     }
     pushbk_float(log(argv->fpval));
 }
@@ -1060,13 +1060,13 @@ Object  *argv;
 
     if( !argv[0].id.defined ) {
 	error(cur_srcpos, "nth_token: '%s' is undefined",
-	      "nth_token: '%s' ¤¬ÄêµÁ¤µ¤ì¤Æ¤¤¤Ş¤»¤ó", dp->name );
+	      "nth_token: '%s' ãŒå®šç¾©ã•ã‚Œã¦ã„ã¾ã›ã‚“", dp->name );
     } else if( (dp->type != D_LocalMacro && 
 		dp->type != D_ThreadMacro) ||
 	      (dp->dic_obj.o_type != O_STOKENS && 
 	       dp->dic_obj.o_type != O_WTOKENS) ) {
 	error(cur_srcpos, "nth_token: '%s' is not a token-list macro",
-	      "nth_token: '%s' ¤Ï¥È¡¼¥¯¥óÎó·¿¤Î¥Ş¥¯¥í¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó",dp->name);
+	      "nth_token: '%s' ã¯ãƒˆãƒ¼ã‚¯ãƒ³åˆ—å‹ã®ãƒã‚¯ãƒ­ã§ã¯ã‚ã‚Šã¾ã›ã‚“",dp->name);
     }
     
     for( i = argv[1].o_val, tp = dp->dic_obj.o_tp; --i > 0; ) {
@@ -1096,7 +1096,7 @@ Object  *argv;
     for( i = 0; i < ap->size; i++ ) {
 	if( array_ref(ap,i).o_type != O_STRING ) {
 	    error(cur_srcpos, "concat: Array element is not a string",
-		  "concat: ÇÛÎóÍ×ÁÇ¤¬Ê¸»úÎó¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó");
+		  "concat: é…åˆ—è¦ç´ ãŒæ–‡å­—åˆ—ã§ã¯ã‚ã‚Šã¾ã›ã‚“");
 	}
 	addstr(strbuf, array_ref(ap,i).o_str);
 	if( argc == 2 && i != ap->size - 1 ) {
@@ -1154,7 +1154,7 @@ Object  *argv;
 	case 's':  types |= 0x8000; break;	/* show statistics */
 	default:
 	    warn(cur_srcpos, "dumpdict: `%c': No such dictionary entry type",
-		 "dumpdict: `%c' ¤È¤¤¤¦¼­½ñ¥¨¥ó¥È¥ê¤Î·¿¤Ï¤¢¤ê¤Ş¤»¤ó", 
+		 "dumpdict: `%c' ã¨ã„ã†è¾æ›¸ã‚¨ãƒ³ãƒˆãƒªã®å‹ã¯ã‚ã‚Šã¾ã›ã‚“", 
 		 *typestr);
 	    break;
 	}
@@ -1165,7 +1165,7 @@ Object  *argv;
 	if( !argv[1].id.defined ||
 	   (dp = argv[1].id.dp)->type != D_ThreadName ) {
 	    error(cur_srcpos, "dumpdict: Bad scope specifier",
-		  "dumpdict: ÄÌÍÑÈÏ°Ï»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹");
+		  "dumpdict: é€šç”¨ç¯„å›²æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™");
 	}
 	dp->active--;
 	scope = dp->dic_thd;
@@ -1453,14 +1453,14 @@ Object  *argv;
 	    
 	default:
 	    error(cur_srcpos, "%s: Unrecognized format specifier '%c'",
-		  "%s: '%c' ¤ÏÍ­¸ú¤Ê¥Õ¥©¡¼¥Ş¥Ã¥ÈÊ¸»ú¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó", 
+		  "%s: '%c' ã¯æœ‰åŠ¹ãªãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆæ–‡å­—ã§ã¯ã‚ã‚Šã¾ã›ã‚“", 
 		  cmdname, fchar);
 	}
     }
 
     if( argc != 0 ) {
 	error(cur_srcpos, "%s: Too many arguments",
-	      "%s: °ú¿ô¤¬Â¿¤¹¤®¤Ş¤¹", cmdname);
+	      "%s: å¼•æ•°ãŒå¤šã™ãã¾ã™", cmdname);
     }
 
     addchar(*sptr, 0);
@@ -1468,8 +1468,8 @@ Object  *argv;
 
  no_arg:
     error(cur_srcpos, "%s: Too few arguments",
-	  "%s: °ú¿ô¤¬Â­¤ê¤Ş¤»¤ó", cmdname);
+	  "%s: å¼•æ•°ãŒè¶³ã‚Šã¾ã›ã‚“", cmdname);
  type_mismatch:
     error(cur_srcpos, "%s: Mismatched argument type",
-	  "%s: °ú¿ô¤Î·¿¤¬°ã¤¤¤Ş¤¹", cmdname);
+	  "%s: å¼•æ•°ã®å‹ãŒé•ã„ã¾ã™", cmdname);
 }

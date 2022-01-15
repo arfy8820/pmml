@@ -142,7 +142,7 @@ error(long src_pos, char *emsg, char *jmsg, ...)
     va_start(args, jmsg);
 #endif
 
-    errhdrout(src_pos, "Error", "¥¨¥é¡¼", NULL);
+    errhdrout(src_pos, "Error", "ã‚¨ãƒ©ãƒ¼", NULL);
     vfprintf(stderr, japan ? jmsg : emsg, args);
     fprintf(stderr, "\n");
     va_end(args);
@@ -179,7 +179,7 @@ terror(long src_pos, Token *tp, char *emsg, char *jmsg, ...)
     va_start(args, jmsg);
 #endif
 
-    errhdrout(src_pos, "Error", "¥¨¥é¡¼", tp);
+    errhdrout(src_pos, "Error", "ã‚¨ãƒ©ãƒ¼", tp);
     vfprintf(stderr, japan ? jmsg : emsg, args);
     fprintf(stderr, "\n");
     va_end(args);
@@ -195,11 +195,11 @@ void
 parse_error(next_token)
 Token  *next_token;
 {
-    errhdrout(cur_srcpos, "Error", "¥¨¥é¡¼", NULL);
+    errhdrout(cur_srcpos, "Error", "ã‚¨ãƒ©ãƒ¼", NULL);
     if( japan ) {
 	fprintf(stderr, "`");
 	fprint_token(stderr, next_token, err_maxelms, err_maxtklen);
-	fprintf(stderr, "' ¤ÎÉÕ¶á¤ËÊ¸Ë¡¤Î¸í¤ê¤¬¤¢¤ê¤Ş¤¹\n");
+	fprintf(stderr, "' ã®ä»˜è¿‘ã«æ–‡æ³•ã®èª¤ã‚ŠãŒã‚ã‚Šã¾ã™\n");
     } else {
 	fprintf(stderr, "Parse error near `");
 	fprint_token(stderr, next_token, err_maxelms, err_maxtklen);
@@ -219,7 +219,7 @@ char  *fname;
 {
     char  *reason;
 
-    errhdrout(cur_srcpos, "Error", "¥¨¥é¡¼", NULL);
+    errhdrout(cur_srcpos, "Error", "ã‚¨ãƒ©ãƒ¼", NULL);
 
     switch( errno ) {
     case EBADEOF_SMF:
@@ -239,7 +239,7 @@ char  *fname;
 	goto bad_fmt;
     bad_fmt:
 	if( japan ) {
-	    fprintf(stderr, "%s: Àµ¤·¤¤MIDI¥Õ¥¡¥¤¥ë¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó (%s)\n",
+	    fprintf(stderr, "%s: æ­£ã—ã„MIDIãƒ•ã‚¡ã‚¤ãƒ«ã§ã¯ã‚ã‚Šã¾ã›ã‚“ (%s)\n",
 		    fname, reason);
 	} else {
 	    fprintf(stderr, "%s: Corrupted MIDI file (%s)\n", fname, reason);
@@ -248,7 +248,7 @@ char  *fname;
 
     case ESEEKFAIL_SMF:
 	if( japan ) {
-	    fprintf(stderr, "%s: ¥·¡¼¥¯¤Ç¤­¤Ş¤»¤ó\n", fname);
+	    fprintf(stderr, "%s: ã‚·ãƒ¼ã‚¯ã§ãã¾ã›ã‚“\n", fname);
 	} else {
 	    fprintf(stderr, "%s: Can not seek\n", fname);
 	}
@@ -256,7 +256,7 @@ char  *fname;
 
     case ENOENT:
 	if( japan ) {
-	    fprintf(stderr, "%s: ¥Õ¥¡¥¤¥ë¤¬¸«¤Ä¤«¤ê¤Ş¤»¤ó\n", fname);
+	    fprintf(stderr, "%s: ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“\n", fname);
 	} else {
 	    fprintf(stderr, "%s: No such file\n", fname);
 	}
@@ -264,7 +264,7 @@ char  *fname;
 	    
     default:
 	if( japan ) {
-	    fprintf(stderr, "%s: MIDI¥Õ¥¡¥¤¥ëÆş½ĞÎÏ¥¨¥é¡¼ (%s)\n",
+	    fprintf(stderr, "%s: MIDIãƒ•ã‚¡ã‚¤ãƒ«å…¥å‡ºåŠ›ã‚¨ãƒ©ãƒ¼ (%s)\n",
 		    fname, strerror(errno));
 	} else {
 	    fprintf(stderr, "%s: MIDI file I/O error (%s)\n",
@@ -305,7 +305,7 @@ warn(long src_pos, char *emsg, char *jmsg, ...)
     va_start(args, jmsg);
 #endif
 
-    errhdrout(src_pos, "Warning", "·Ù¹ğ", NULL);
+    errhdrout(src_pos, "Warning", "è­¦å‘Š", NULL);
     vfprintf(stderr, japan ? jmsg : emsg, args);
     fprintf(stderr, "\n");
     va_end(args);
@@ -319,7 +319,7 @@ err_nomem(str)
 char  *str;
 {
     if( japan ) {
-	fprintf(stderr, "¥á¥â¥ê¤¬Â­¤ê¤Ş¤»¤ó (%s)\n", str);
+	fprintf(stderr, "ãƒ¡ãƒ¢ãƒªãŒè¶³ã‚Šã¾ã›ã‚“ (%s)\n", str);
     } else {
 	fprintf(stderr, "Sorry. Can not continue compilation due to the lack of memory space (%s)\n", str);
     }

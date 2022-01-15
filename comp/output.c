@@ -794,7 +794,7 @@ Rational *max_time;	/* (Output) the time length of song (negative
 			    ep1 = ep1->next );
 			if( !ep1 ) {
 			    warn(0L, "LASTVAL is used without previous value (time=%s, func_no=%d)",
-				 "1¤ÄÁ°¤Î¥¤¥Ù¥ó¥È¤¬Ìµ¤¤¤Î¤ËLASTVAL¤¬»È¤ï¤ì¤Æ¤¤¤Þ¤¹ (time=%s, func_no=%d)",
+				 "1ã¤å‰ã®ã‚¤ãƒ™ãƒ³ãƒˆãŒç„¡ã„ã®ã«LASTVALãŒä½¿ã‚ã‚Œã¦ã„ã¾ã™ (time=%s, func_no=%d)",
 				 rstring(&ep->time), ep->type & ETYPE);
 			    ep->u.obj.o_val = 0;
 			} else {
@@ -1026,7 +1026,7 @@ int  no_output;
     /* warn if there are "pt" events in the list */
     while( *t && ((*t)->type & CTYPE) == E_Pt ) {
 	warn(0L, "Floating ctrl_pt (time=%s, func_no=%d)", 
-	     "Ãè¤ËÉâ¤¤¤¿ ctrl_pt ¤¬¤¢¤ê¤Þ¤¹ (time=%s, func_no=%d)", 
+	     "å®™ã«æµ®ã„ãŸ ctrl_pt ãŒã‚ã‚Šã¾ã™ (time=%s, func_no=%d)", 
 	     rstring(&(*t)->time), (*t)->type & ETYPE);
 	ep1 = (*t)->next;
 	event_free(*t);
@@ -1085,7 +1085,7 @@ Rational *begin_time, *end_time;
 	/* get the begging point to ep1 */
 	if( (ep1 = *ptlist) == NULL ) {
 	    error(0L, "ctrl_to without beginning point (time=%s, func_no=%d)",
-		  "ctrl_to ¤Ë³«»ÏÅÀ¤¬¤¢¤ê¤Þ¤»¤ó (time=%s, func_no=%d)",
+		  "ctrl_to ã«é–‹å§‹ç‚¹ãŒã‚ã‚Šã¾ã›ã‚“ (time=%s, func_no=%d)",
 		  rstring(&lastpt->time), lastpt->type & ETYPE);
 	}
 
@@ -1095,7 +1095,7 @@ Rational *begin_time, *end_time;
 	} else {  /* CTYPE == 0 */
 	    if( !isnumber(ep1->u.obj.o_type) ) {
 		error(0L, "ctrl_to: Inappropriate type of control value at the beginning point (time=%s, func_no=%d)",
-		      "ctrl_to: ³«»ÏÅÀ¤Î¥³¥ó¥È¥í¡¼¥ëÃÍ¤Î·¿¤¬ÉÔÅ¬Åö¤Ç¤¹ (time=%s, func_no=%d)",
+		      "ctrl_to: é–‹å§‹ç‚¹ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«å€¤ã®åž‹ãŒä¸é©å½“ã§ã™ (time=%s, func_no=%d)",
 		      rstring(&ep1->time), ep1->type);
 	    }
 	    conv_to_float(&ep1->u.obj, &val1);
@@ -1189,7 +1189,7 @@ Rational  *begin_time, *end_time;
     if( !ep ) {
 	error(0L, 
 	      "ctrl_cto without beginning point (time=%s, func_no=%d)",
-	      "ctrl_cto ¤Ë³«»ÏÅÀ¤¬¤¢¤ê¤Þ¤»¤ó (time=%s, func_no=%d)",
+	      "ctrl_cto ã«é–‹å§‹ç‚¹ãŒã‚ã‚Šã¾ã›ã‚“ (time=%s, func_no=%d)",
 	      rstring(&lastpt->time), lastpt->type & ETYPE);
     }
 
@@ -1216,7 +1216,7 @@ Rational  *begin_time, *end_time;
     firstpt = *ptlist;
     if( !isnumber(firstpt->u.obj.o_type) ) {
 	error(0L, "ctrl_cto: Inappropriate type of control value at the beginning point (time=%s, func_no=%d)",
-	      "ctrl_cto: ³«»ÏÅÀ¤Î¥³¥ó¥È¥í¡¼¥ëÃÍ¤Î·¿¤¬ÉÔÅ¬Åö¤Ç¤¹ (time=%s, func_no=%d)",
+	      "ctrl_cto: é–‹å§‹ç‚¹ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«å€¤ã®åž‹ãŒä¸é©å½“ã§ã™ (time=%s, func_no=%d)",
 	      rstring(&firstpt->time), firstpt->type);
     }
     x[0] = rational_to_float(&firstpt->time);
@@ -1227,7 +1227,7 @@ Rational  *begin_time, *end_time;
     for(i = 0; i < ndata - 1; i++ ) {
 	if( x[i] == x[i+1] ) {
 	    error(0L, "ctrl_cto: More than one control point exists at the same time (time=%s, func_no=%d)",
-		  "ctrl_cto: Æ±°ì»þ¹ï¤ËÊ£¿ô¤ÎÀ©¸æÅÀ¤¬¤¢¤ê¤Þ¤¹ (time=%s, func_no=%d)",
+		  "ctrl_cto: åŒä¸€æ™‚åˆ»ã«è¤‡æ•°ã®åˆ¶å¾¡ç‚¹ãŒã‚ã‚Šã¾ã™ (time=%s, func_no=%d)",
 		  rstring(&lastpt->time), lastpt->type & ETYPE);
 	}
     }

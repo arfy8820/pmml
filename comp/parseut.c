@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <ctype.h>
 #include "pmml.h"
 
 static Token *	scan_q_arg P((Token **));
@@ -63,14 +64,14 @@ char  *cmd_name;	/* command name (for error message) */
 
     src_pos1 = cur_srcpos;
     if( get_token()->type != '(' ) {
-	error(src_pos1, "%s: '(' expected", "%s: '(' ¤¬¤¢¤ê¤Ş¤»¤ó", cmd_name);
+	error(src_pos1, "%s: '(' expected", "%s: '(' ãŒã‚ã‚Šã¾ã›ã‚“", cmd_name);
     }
 
     for(;;) {
 	if( ! *arg_spec ) {
 	    if( get_token()->type != ')' ) {
 		error(cur_srcpos, "%s: Too many arguments", 
-		      "%s: °ú¿ô¤¬Â¿¤¹¤®¤Ş¤¹", cmd_name);
+		      "%s: å¼•æ•°ãŒå¤šã™ãã¾ã™", cmd_name);
 	    } else {
 		break;
 	    }
@@ -118,13 +119,13 @@ char  *cmd_name;	/* command name (for error message) */
 		 get_id(c == 'X' ? SD_LOCAL : c == 'x' ? SD_MINE : SD_ANY, 
 			c != 'y', &dp)) == -1 ) {
 		error(cur_srcpos, "%s: Inappropriate identifier", 
-		      "%s: Ì¾Á°¤¬ÉÔÅ¬ÀÚ¤Ç¤¹", cmd_name);
+		      "%s: åå‰ãŒä¸é©åˆ‡ã§ã™", cmd_name);
 	    }
 	    mp->arg[nargs].id.dp = dp;
 	    tp = get_token();
 	    if( tp->type == T_DCOLON ) {
 		error(cur_srcpos, "%s: Bad scope specifier",
-		      "%s: ÄÌÍÑÈÏ°Ï»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹", cmd_name);
+		      "%s: é€šç”¨ç¯„å›²æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™", cmd_name);
 	    }
 	    
 	} else if( c == 'l' ) {
@@ -136,7 +137,7 @@ char  *cmd_name;	/* command name (for error message) */
 	    }
 	    if( get_id(SD_LOCAL, DEF_ON_UNDEF, &dp) == -1 ) { 
 		error(cur_srcpos, "%s: Inappropriate identifier in arguments", 
-		      "%s: °ú¿ôÃæ¤ÎÌ¾Á°¤¬ÉÔÅ¬ÀÚ¤Ç¤¹", cmd_name);
+		      "%s: å¼•æ•°ä¸­ã®åå‰ãŒä¸é©åˆ‡ã§ã™", cmd_name);
 	    }
 	    mp->arg[nargs].o_type = O_WTOKENS;
 	    (mp->arg[nargs].o_tp = new_token(T_LOCALID, cur_srcpos))
@@ -145,7 +146,7 @@ char  *cmd_name;	/* command name (for error message) */
 	    tp = get_token();
 	    if( tp->type == T_DCOLON ) {
 		error(cur_srcpos, "%s: Bad scope specifier",
-		      "%s: ÄÌÍÑÈÏ°Ï»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹", cmd_name);
+		      "%s: é€šç”¨ç¯„å›²æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™", cmd_name);
 	    }
 	    
 	} else {
@@ -202,7 +203,7 @@ char  *cmd_name;	/* command name (for error message) */
 	    }
 	    if( !goodarg ) {
 		error(cur_srcpos, "%s: Mismatched argument type",
-		      "%s: °ú¿ô¤Î·¿¤¬°ã¤¤¤Ş¤¹", cmd_name);
+		      "%s: å¼•æ•°ã®å‹ãŒé•ã„ã¾ã™", cmd_name);
 	    }
 	    tp = get_token();
 	    mp->arg[nargs] = *op;
@@ -214,16 +215,16 @@ char  *cmd_name;	/* command name (for error message) */
 	    break;
 	} else if( tp->type == T_EOF ) {
 	    error(src_pos1, "%s: Closing ')' is not found",
-		  "%s: '(' ¤ËÂĞ±ş¤¹¤ë ')' ¤¬¤¢¤ê¤Ş¤»¤ó", cmd_name);
+		  "%s: '(' ã«å¯¾å¿œã™ã‚‹ ')' ãŒã‚ã‚Šã¾ã›ã‚“", cmd_name);
 	} else if( tp->type != ',' ) {
 	    error(cur_srcpos, "%s: Parse error in arguments",
-		  "%s: °ú¿ô¤Ë´Ö°ã¤¤¤¬¤¢¤ê¤Ş¤¹", cmd_name);
+		  "%s: å¼•æ•°ã«é–“é•ã„ãŒã‚ã‚Šã¾ã™", cmd_name);
 	}
     }
 
     if( !opts && isalpha(*arg_spec) && arg_spec[1] != '*' ) {
 	error(cur_srcpos, "%s: Too few arguments", 
-	      "%s: °ú¿ô¤¬Â­¤ê¤Ş¤»¤ó", cmd_name);
+	      "%s: å¼•æ•°ãŒè¶³ã‚Šã¾ã›ã‚“", cmd_name);
     }
     
     for( maxargs = nargs; *arg_spec; arg_spec++ ) {
@@ -394,7 +395,7 @@ Token  **lasttp;
 	    case 3:
 		if( !cur_thd->pb->calls ) {
 		    warn(cur_srcpos, "'local::' will be ignored",
-			 "'local::' ¤ÏÌµ»ë¤µ¤ì¤Ş¤¹");
+			 "'local::' ã¯ç„¡è¦–ã•ã‚Œã¾ã™");
 		    state = 1;
 		    action = Collect;
 		} else {
@@ -467,7 +468,7 @@ int  end_char;		/* closing parenthesis charactor '}', ']', etc. */
 	begin_char = - begin_char;
     } else {
 	if( get_token()->type != begin_char ) {
-	    error(src_pos1, "%s: Missing '%c'", "%s: '%c' ¤¬¤¢¤ê¤Ş¤»¤ó", 
+	    error(src_pos1, "%s: Missing '%c'", "%s: '%c' ãŒã‚ã‚Šã¾ã›ã‚“", 
 		  cmd_name, begin_char);
 	}
     }
@@ -481,7 +482,7 @@ int  end_char;		/* closing parenthesis charactor '}', ']', etc. */
 	    paren_cnt++;
 	} else if( tp->type == T_EOF ) {
 	    error(src_pos1, "%s: Closing '%c' is not found",
-		  "%s: ÊÄ¤¸³ç¸Ì '%c' ¤¬¤¢¤ê¤Ş¤»¤ó", cmd_name, end_char);
+		  "%s: é–‰ã˜æ‹¬å¼§ '%c' ãŒã‚ã‚Šã¾ã›ã‚“", cmd_name, end_char);
 	}
 	if( !skip_flag ) {
 	    *nextp = copy_token(tp);
@@ -548,7 +549,7 @@ DicEnt  **dp_rtn;
 		    get_token();	/* skip '::' */
 		    if( state == 1 ) {
 			error(cur_srcpos, "Illegal domain specifier",
-			      "ÄÌÍÑÈÏ°Ï»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹");
+			      "é€šç”¨ç¯„å›²æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™");
 		    }
 		    search_mode = SD_THREAD;
 		    scope = dp->dic_thd;
@@ -592,10 +593,10 @@ DicEnt  **dp_rtn;
 	case T_LOCAL:
 	    if( state != 0 ) {
 		error(cur_srcpos, "Illegal domain specifier",
-		      "ÄÌÍÑÈÏ°Ï»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹");
+		      "é€šç”¨ç¯„å›²æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™");
 	    } else if( !cur_mc ) {
 		warn(cur_srcpos, "'local::' will be ignored",
-		     "'local::' ¤ÏÌµ»ë¤µ¤ì¤Ş¤¹");
+		     "'local::' ã¯ç„¡è¦–ã•ã‚Œã¾ã™");
 	    } else {
 		search_mode = SD_LOCAL;
 		state = 1;
@@ -611,7 +612,7 @@ DicEnt  **dp_rtn;
 	case '.':
 	    if( state == 1 ) { 
 		warn(cur_srcpos, "'.::' will be ignored",
-		     "'.::' ¤ÏÌµ»ë¤µ¤ì¤Ş¤¹");
+		     "'.::' ã¯ç„¡è¦–ã•ã‚Œã¾ã™");
 	    } else if( state != 3 ) {
 		search_mode = SD_THREAD;
 		scope = cur_thd;
@@ -622,7 +623,7 @@ DicEnt  **dp_rtn;
 	case T_DDOT:
 	    if( state == 1 ) { 
 		warn(cur_srcpos, "'..::' will be ignored",
-		     "'..::' ¤ÏÌµ»ë¤µ¤ì¤Ş¤¹");
+		     "'..::' ã¯ç„¡è¦–ã•ã‚Œã¾ã™");
 	    } else {
 		if( state != 3 ) {
 		    search_mode = SD_THREAD;
@@ -636,7 +637,7 @@ DicEnt  **dp_rtn;
 	case T_TDOT:
 	    if( state == 1 ) { 
 		warn(cur_srcpos, "'...::' will be ignored",
-		     "'...::' ¤ÏÌµ»ë¤µ¤ì¤Ş¤¹");
+		     "'...::' ã¯ç„¡è¦–ã•ã‚Œã¾ã™");
 	    } else {
 		if( state != 3 ) {
 		    search_mode = SD_THREAD;
@@ -656,7 +657,7 @@ DicEnt  **dp_rtn;
 	skip_dcolon:
 	    if( get_token()->type != T_DCOLON ) {
 		error(cur_srcpos, "Illegal domain specifier",
-		       "ÄÌÍÑÈÏ°Ï»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Ş¤¹");
+		       "é€šç”¨ç¯„å›²æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™");
 	    }
 	    break;
 	}

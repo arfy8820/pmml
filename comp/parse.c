@@ -95,6 +95,7 @@ static 		err_chan P((int));
 static		err_funcno P((int));
 static		warn_note P((int));
 static void	err_undef P((DicEnt *));
+int end_alt(int flags);
 
 /*
  * macros
@@ -392,11 +393,11 @@ do_defthread()
 		dp = dp1;
 	    } else {
 		error(cur_srcpos, "%s: already defined",
-		      "%s: ¥˚§ÀƒÍµ¡∫—§ﬂ§«§π", dp->name);
+		      "%s: Êó¢„Å´ÂÆöÁæ©Ê∏à„Åø„Åß„Åô", dp->name);
 	    }
 	} else if( dp->type == D_LocalMacro ) {
 	    error(cur_srcpos, "%s: Can not define thread as a local name",
-		  "%s: •π•Ï•√•…§Ú•Ì°º•´•ÎÃæ§»§∑§∆§œƒÍµ¡§«§≠§ﬁ§ª§Û", dp->name);
+		  "%s: „Çπ„É¨„ÉÉ„Éâ„Çí„É≠„Éº„Ç´„É´Âêç„Å®„Åó„Å¶„ÅØÂÆöÁæ©„Åß„Åç„Åæ„Åõ„Çì", dp->name);
 	}
 	dp->type = D_ThreadName;
 	hp = create_thread(dp->scope.c, 0);
@@ -572,7 +573,7 @@ Rational  *dt_ptr;
 					   it is called with ALL_CMDS) */
 	    if( !tp || tp->type == T_EOF ) {
 		error(src_pos1, "'(': Closing ')' is not found",
-		      "'(' §À¬–±˛§π§Î ')' §¨§¢§Í§ﬁ§ª§Û");
+		      "'(' „Å´ÂØæÂøú„Åô„Çã ')' „Åå„ÅÇ„Çä„Åæ„Åõ„Çì");
 	    } else if( tp->type != ')' ) {
 		parse_error(tp);
 	    }
@@ -729,7 +730,7 @@ int
 do_rbrace()
 {
     error(cur_srcpos, "'}': No corresponding '{'",
-	  "'}' §À¬–±˛§π§Î '{' §¨§¢§Í§ﬁ§ª§Û");
+	  "'}' „Å´ÂØæÂøú„Åô„Çã '{' „Åå„ÅÇ„Çä„Åæ„Åõ„Çì");
 }
 
 int
@@ -799,7 +800,7 @@ int
 do_rbracket()
 {
     error(cur_srcpos, "']': No corresponding '['",
-	  "']' §À¬–±˛§π§Î '[' §¨§¢§Í§ﬁ§ª§Û");
+	  "']' „Å´ÂØæÂøú„Åô„Çã '[' „Åå„ÅÇ„Çä„Åæ„Åõ„Çì");
 }
 
 /*
@@ -820,7 +821,7 @@ do_reg()
     if( assign_type != '=' && !(tkinfo[assign_type].flags & F_CA) ) {
 	err_token.type = type;
 	terror(cur_srcpos, &err_token, 
-	       "Isolated register", "•Ï•∏•π•ø§¨∏…Œ©§∑§∆§§§ﬁ§π");
+	       "Isolated register", "„É¨„Ç∏„Çπ„Çø„ÅåÂ≠§Á´ã„Åó„Å¶„ÅÑ„Åæ„Åô");
     }
 
     if( assign_type == '=' ) {
@@ -850,7 +851,7 @@ do_reg()
     if( !isnumber(op->o_type) ) {
 	err_token.type = type;
 	terror(cur_srcpos, &err_token, "Illegel type for register value",
-	       "•Ï•∏•π•ø√Õ§Œ∑ø§¨∞„§§§ﬁ§π");
+	       "„É¨„Ç∏„Çπ„ÇøÂÄ§„ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
     }
 
     if( IsIntReg(regno) ) {
@@ -886,7 +887,7 @@ do_length()
     pushbk_object(&cur_token->u.obj);
     if( !(op = get_expression()) )  parse_error(cur_token);
     if( !isnumber(op->o_type) ) {
-	error(cur_srcpos, "Bad length specifier", "≤ª≤¡ªÿƒÍ§¨¥÷∞„§√§∆§§§ﬁ§π");
+	error(cur_srcpos, "Bad length specifier", "Èü≥‰æ°ÊåáÂÆö„ÅåÈñìÈÅï„Å£„Å¶„ÅÑ„Åæ„Åô");
     }
     conv_to_rational(op, &cur_thd->reg.l);
     return 0;
@@ -949,7 +950,7 @@ do_sync()
     if( cur_thd->flags & (EFLAG | MFLAG) ) {
 	error(cur_srcpos, 
 	      "===: Unavailable in a modifier or effector action",   
-	      "===: Ω§æ˛ª“§ﬁ§ø§œ•®•’•ß•Ø•ø•¢•Ø•∑•Á•Û§Œ√Ê§«§œº¬π‘§«§≠§ﬁ§ª§Û");
+	      "===: ‰øÆÈ£æÂ≠ê„Åæ„Åü„ÅØ„Ç®„Éï„Çß„ÇØ„Çø„Ç¢„ÇØ„Ç∑„Éß„É≥„ÅÆ‰∏≠„Åß„ÅØÂÆüË°å„Åß„Åç„Åæ„Åõ„Çì");
     }
 
     /* Are there any child threads in the RTL? */
@@ -1066,14 +1067,14 @@ MacroCall  **mp_rtn;
     if( mp->arg[0].id.defined ) { /* already defined */
 	if( dp->type != D_Channel ) {
 	    error(cur_srcpos, "%s: Not a communication channel name",
-		  "%s: ƒÃøÆ•¡•„•Õ•ÎÃæ§«§œ§¢§Í§ﬁ§ª§Û", dp->name);
+		  "%s: ÈÄö‰ø°„ÉÅ„É£„Éç„É´Âêç„Åß„ÅØ„ÅÇ„Çä„Åæ„Åõ„Çì", dp->name);
 	}
 	chnl = dp->dic_chnl;
     } else { /* not defined */
 	if( dp->type == D_LocalMacro || 
 	   (dp->scope.c != root_thd && dp->scope.c != cur_thd ) ) {
 	    error(cur_srcpos, "%s: Bad scope specifier",
-		  "%s: ƒÃÕ—»œ∞œªÿƒÍ§¨¥÷∞„§√§∆§§§ﬁ§π", dp->name);
+		  "%s: ÈÄöÁî®ÁØÑÂõ≤ÊåáÂÆö„ÅåÈñìÈÅï„Å£„Å¶„ÅÑ„Åæ„Åô", dp->name);
 	}
 	dp->type = D_Channel;
 	dp->scope.c = root_thd;		/* Channel name is always global. */
@@ -1113,11 +1114,11 @@ Channel  *chnl;
 	if( wp->status == WS_WaitBlocked || wp->status == WS_AltBlocked ) {
 	    error(cur_srcpos,
 		  "%s: Some threads are doing wait/alt for this communication channel",
-		  "%s: §≥§ŒƒÃøÆ•¡•„•Õ•Î§À¬–§∑§∆ wait §ﬁ§ø§œ alt §Úº¬π‘§∑§∆§§§Î•π•Ï•√•…§¨§¢§Í§ﬁ§π", chnl->dp->name);
+		  "%s: „Åì„ÅÆÈÄö‰ø°„ÉÅ„É£„Éç„É´„Å´ÂØæ„Åó„Å¶ wait „Åæ„Åü„ÅØ alt „ÇíÂÆüË°å„Åó„Å¶„ÅÑ„Çã„Çπ„É¨„ÉÉ„Éâ„Åå„ÅÇ„Çä„Åæ„Åô", chnl->dp->name);
 	} else if( wp->status == WS_Executing ) {
 	    error(cur_srcpos,
 		  "%s: Some wait/alt have not finished receiving messages",
-		  "%s: •·•√•ª°º•∏§Œºı§±ºË§Í§Ú§ﬁ§¿Ω™§®§∆§§§ §§ wait §ﬁ§ø§œ alt §¨§¢§Í§ﬁ§π", chnl->dp->name);
+		  "%s: „É°„ÉÉ„Çª„Éº„Ç∏„ÅÆÂèó„ÅëÂèñ„Çä„Çí„Åæ„Å†ÁµÇ„Åà„Å¶„ÅÑ„Å™„ÅÑ wait „Åæ„Åü„ÅØ alt „Åå„ÅÇ„Çä„Åæ„Åô", chnl->dp->name);
 	}
     }
    
@@ -1162,12 +1163,12 @@ check_dead_lock()
 	for( wp = cp->wtop; wp; wp = wp->next ) {
 	    if( wp->status == WS_WaitBlocked ) {
 		error(wp->src_pos, "wait: Permanently blocked",
-		      "wait: ± µ◊¬‘§¡æı¬÷§À§ §Í§ﬁ§∑§ø");
+		      "wait: Ê∞∏‰πÖÂæÖ„Å°Áä∂ÊÖã„Å´„Å™„Çä„Åæ„Åó„Åü");
 	    } else if( wp->status == WS_AltBlocked ) {
 		/* force to terminate alt loop */
 		warn(wp->src_pos, 
 		     "alt: Automatically terminated due to permanent blocking", 
-		     "alt: ± µ◊¬‘§¡æı¬÷§Œ§ø§·º´∆∞≈™§ÀΩ™Œª§∑§ﬁ§π");
+		     "alt: Ê∞∏‰πÖÂæÖ„Å°Áä∂ÊÖã„ÅÆ„Åü„ÇÅËá™ÂãïÁöÑ„Å´ÁµÇ‰∫Ü„Åó„Åæ„Åô");
 		awake_thread(wp->sleep_thd);
 		total_blocked--;
 		get_token();  /* get EALT token */
@@ -1189,7 +1190,7 @@ Channel  *chnl;
     for( msg = chnl->mtop; msg; msg = msg->next ) {
 	if( !msg->received ) {
 	    warn(msg->src_pos, "signal: Message is never received",
-		 "signal: •·•√•ª°º•∏§¨∞Ï≈Ÿ§‚ºı§±ºË§È§Ï§∆§§§ﬁ§ª§Û");
+		 "signal: „É°„ÉÉ„Çª„Éº„Ç∏„Åå‰∏ÄÂ∫¶„ÇÇÂèó„ÅëÂèñ„Çâ„Çå„Å¶„ÅÑ„Åæ„Åõ„Çì");
 	    break;
 	}
     }
@@ -1212,7 +1213,7 @@ do_wait()
     if( cur_thd->flags & (EFLAG | MFLAG) ) {
 	error(cur_srcpos, 
 	      "wait: Unavailable in a modifier or effector action",   
-	      "wait: Ω§æ˛ª“§ﬁ§ø§œ•®•’•ß•Ø•ø•¢•Ø•∑•Á•Û§Œ√Ê§«§œº¬π‘§«§≠§ﬁ§ª§Û");
+	      "wait: ‰øÆÈ£æÂ≠ê„Åæ„Åü„ÅØ„Ç®„Éï„Çß„ÇØ„Çø„Ç¢„ÇØ„Ç∑„Éß„É≥„ÅÆ‰∏≠„Åß„ÅØÂÆüË°å„Åß„Åç„Åæ„Åõ„Çì");
     }
 
     chnl = get_channel_name("wait", "y:x", &mp);
@@ -1297,7 +1298,7 @@ end_wait()
 	cur_token->u.ewait.dp->active--;
 	if( nextmsg->message.o_type == O_NIL ) {
 	    error(cur_token->u.ewait.wp->src_pos,
-		  "wait: Too many arguments", "wait: ∞˙øÙ§¨¬ø§π§Æ§ﬁ§π");
+		  "wait: Too many arguments", "wait: ÂºïÊï∞„ÅåÂ§ö„Åô„Åé„Åæ„Åô");
 	}
 	copy_object(&obj, &nextmsg->message);
 	redefine_macro(cur_token->u.ewait.dp, &obj, NULL); 
@@ -1324,11 +1325,11 @@ do_alt()
     if( cur_thd->flags & (EFLAG | MFLAG) ) {
 	error(cur_srcpos, 
 	      "alt: Unavailable in a modifier or effector action",   
-	      "alt: Ω§æ˛ª“§ﬁ§ø§œ•®•’•ß•Ø•ø•¢•Ø•∑•Á•Û§Œ√Ê§«§œº¬π‘§«§≠§ﬁ§ª§Û");
+	      "alt: ‰øÆÈ£æÂ≠ê„Åæ„Åü„ÅØ„Ç®„Éï„Çß„ÇØ„Çø„Ç¢„ÇØ„Ç∑„Éß„É≥„ÅÆ‰∏≠„Åß„ÅØÂÆüË°å„Åß„Åç„Åæ„Åõ„Çì");
     }
 
     if( get_token()->type != '{' ) {
-	error(cur_srcpos, "alt: Missing '{'", "alt: '{' §¨§¢§Í§ﬁ§ª§Û");
+	error(cur_srcpos, "alt: Missing '{'", "alt: '{' „Åå„ÅÇ„Çä„Åæ„Åõ„Çì");
     }
 
     /* If alt{} is executed in { } or [ ], the thread which is considered 
@@ -1478,7 +1479,7 @@ int  flags;
 	    if( min_guard->dp ) {
 		if( min_nextmsg->message.o_type == O_NIL ) {
 		    error(min_guard->wp->src_pos, "case: Too many arguments", 
-			  "case: ∞˙øÙ§¨¬ø§π§Æ§ﬁ§π");
+			  "case: ÂºïÊï∞„ÅåÂ§ö„Åô„Åé„Åæ„Åô");
 		}
 		copy_object(&obj, &min_nextmsg->message);
 		redefine_macro(min_guard->dp, &obj, NULL);
@@ -1699,12 +1700,12 @@ do_cont_ctrl()
 	}
 	if( !rgtzero(&mp->arg[2].r) ) {
 	    error(cur_srcpos, "ctrl_(c)to: Illegal time step", 
-		  "ctrl_(c)to: ª˛¥÷πÔ§ﬂ…˝§¨…‘¿µ§ √Õ§«§π");
+		  "ctrl_(c)to: ÊôÇÈñìÂàª„ÅøÂπÖ„Åå‰∏çÊ≠£„Å™ÂÄ§„Åß„Åô");
 	} 
 	ep->u.cp->tmstep = mp->arg[2].r;
 	if( mp->arg[3].fpval < 0 ) {
 	    error(cur_srcpos, "ctrl_(c)to: Illegal threshold value", 
-		  "ctrl_(c)to: ÔÁ√Õ§¨…‘¿µ§«§π");
+		  "ctrl_(c)to: ÈñæÂÄ§„Åå‰∏çÊ≠£„Åß„Åô");
 	} 
 	ep->u.cp->thres = mp->arg[3].fpval;
 
@@ -1734,7 +1735,7 @@ do_cont_ctrl()
     /*
        if( ep->u.cp->cval == LASTVAL ) {
            error(cur_srcpos, "ctrl_to/cto/pt: Illegal control value",
-	   	 "ctrl_to/cto/pt: •≥•Û•»•Ì°º•Î√Õ§¨…‘¿µ§«§π");
+	   	 "ctrl_to/cto/pt: „Ç≥„É≥„Éà„É≠„Éº„É´ÂÄ§„Åå‰∏çÊ≠£„Åß„Åô");
        }
     */
     ep->next = NULL;
@@ -1802,7 +1803,7 @@ do_excl()
     for( p = ep->ev_data, i = 0; i < ap->size; i++ ) {
 	if( !isnumber(array_ref(ap,i).o_type) ) {
 	    error(cur_srcpos, "%s: invalid type of array element",
-		  "%s: «€ŒÛÕ◊¡«§Œ∑ø§¨∞„§§§ﬁ§π", name);
+		  "%s: ÈÖçÂàóË¶ÅÁ¥†„ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô", name);
 	}
 	conv_to_int(&array_ref(ap,i), &ival);
 	*p++ = ival & dmask;
@@ -1872,7 +1873,7 @@ do_text()
 
     if( mp->arg[0].o_val < 1 || mp->arg[0].o_val >= 16 ) {
 	error(cur_srcpos, "text: Bad text-type number",
-	      "text: •∆•≠•π•»ºÔ Ã»÷πÊ§¨¥÷∞„§√§∆§§§ﬁ§π");
+	      "text: „ÉÜ„Ç≠„Çπ„ÉàÁ®ÆÂà•Áï™Âè∑„ÅåÈñìÈÅï„Å£„Å¶„ÅÑ„Åæ„Åô");
     }
 
     event_alloc(ep);
@@ -1910,7 +1911,7 @@ do_meta()
 
     if( mp->arg[0].o_val < 0 || mp->arg[0].o_val >= 128 ) {
 	error(cur_srcpos, "meta: Bad function number",
-	      "meta: •’•°•Û•Ø•∑•Á•Û»÷πÊ§¨¥÷∞„§√§∆§§§ﬁ§π");
+	      "meta: „Éï„Ç°„É≥„ÇØ„Ç∑„Éß„É≥Áï™Âè∑„ÅåÈñìÈÅï„Å£„Å¶„ÅÑ„Åæ„Åô");
     }
 
     event_alloc(ep);
@@ -1923,7 +1924,7 @@ do_meta()
     for( p = ep->ev_data, i = 0; i < ap->size; i++ ) {
 	if( !isnumber(array_ref(ap,i).o_type) ) {
 	    error(cur_srcpos, "meta: invalid type of array element",
-		  "meta: «€ŒÛÕ◊¡«§Œ∑ø§¨∞„§§§ﬁ§π");
+		  "meta: ÈÖçÂàóË¶ÅÁ¥†„ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
 	}
 	conv_to_int(&array_ref(ap,i), &ival);
 	*p++ = ival;
@@ -2000,7 +2001,7 @@ do_timesig()
     if( mp->arg[0].o_val <= 0 || dd <= 0 || cc <= 0 ||
        (mp->nargs >= 4 && mp->arg[3].o_val <= 0) ) {
 	error(cur_srcpos, "timesig: wrong argument value",
-	      "timesig: ∞˙øÙ§Œ√Õ§¨…‘≈¨≈ˆ§«§π");
+	      "timesig: ÂºïÊï∞„ÅÆÂÄ§„Åå‰∏çÈÅ©ÂΩì„Åß„Åô");
     }
 
     for( logdd = -1; dd != 0; logdd++ ) {
@@ -2008,7 +2009,7 @@ do_timesig()
     }
     if( (1 << logdd) != mp->arg[1].o_val ) {
 	warn(cur_srcpos, "timesig: Denominator is adjusted to %d",
-	     "timesig:  ¨ Ï§œ %d §ÀΩ§¿µ§µ§Ï§ﬁ§π", 1 << logdd);
+	     "timesig: ÂàÜÊØç„ÅØ %d „Å´‰øÆÊ≠£„Åï„Çå„Åæ„Åô", 1 << logdd);
     }
 
     event_alloc(ep);
@@ -2050,7 +2051,7 @@ do_keysig()
     if( mp->arg[0].o_val < -7 || mp->arg[0].o_val >= 8 ||
         mp->arg[1].o_val < 0 || mp->arg[1].o_val >= 2 ) {
 	warn(cur_srcpos, "keysig: argument value out of range",
-	     "keysig: ∞˙øÙ§Œ√Õ§¨»œ∞œ≥∞§«§π");
+	     "keysig: ÂºïÊï∞„ÅÆÂÄ§„ÅåÁØÑÂõ≤Â§ñ„Åß„Åô");
     }
 
     event_alloc(ep);
@@ -2169,14 +2170,14 @@ do_defeff()
     if( mp->arg[0].id.defined /* is already defined */ ) {
 	if( dp->type != D_EffClass ) {
 	    error(cur_srcpos, "%s: already defined as a different name type",
-		  "%s: ¬æ§ŒºÔŒ‡§ŒÃæ¡∞§»§∑§∆¥˚§ÀƒÍµ¡∫—§ﬂ§«§π", dp->name);
+		  "%s: ‰ªñ„ÅÆÁ®ÆÈ°û„ÅÆÂêçÂâç„Å®„Åó„Å¶Êó¢„Å´ÂÆöÁæ©Ê∏à„Åø„Åß„Åô", dp->name);
 	} else {
 	    delete_effclass(dp->dic_eclass);
 	}
     }
     if( dp->type == D_LocalMacro ) {
 	error(cur_srcpos, "%s: Can not define effector as a local name",
-	      "%s: •®•’•ß•Ø•ø§Ú•Ì°º•´•ÎÃæ§»§∑§∆§œƒÍµ¡§«§≠§ﬁ§ª§Û", dp->name);
+	      "%s: „Ç®„Éï„Çß„ÇØ„Çø„Çí„É≠„Éº„Ç´„É´Âêç„Å®„Åó„Å¶„ÅØÂÆöÁæ©„Åß„Åç„Åæ„Åõ„Çì", dp->name);
     }
 
     if( !(ecp = (EffClass *) malloc(sizeof(EffClass))) ) {
@@ -2189,7 +2190,7 @@ do_defeff()
     if( mp->nargs >= 2 ) {
 	if( !valid_arg_spec(ecp->arg_spec = mp->arg[1].o_str) ) {
 	    error(cur_srcpos, "defeff: Incorrect argument specifier",
-		  "defeff: ∞˙øÙª≈ÕÕ§¨¥÷∞„§√§∆§§§ﬁ§π");
+		  "defeff: ÂºïÊï∞‰ªïÊßò„ÅåÈñìÈÅï„Å£„Å¶„ÅÑ„Åæ„Åô");
 	}
     } else  ecp->arg_spec = DEF_ARG_SPEC;
     ecp->u.n.init = ecp->u.n.detach = ecp->u.n.wrap = NULL;
@@ -2197,7 +2198,7 @@ do_defeff()
     rnextp = &ecp->u.n.rules;
 
     if( get_token()->type != '{' ) {
-	error(cur_srcpos, "defeff: Missing '{'", "defeff: '{' §¨§¢§Í§ﬁ§ª§Û");
+	error(cur_srcpos, "defeff: Missing '{'", "defeff: '{' „Åå„ÅÇ„Çä„Åæ„Åõ„Çì");
     }
 
     while( (tp = get_token())->type != '}' ) {
@@ -2249,7 +2250,7 @@ char  *cmd_name;
     int  i, etype;
 
     if( get_token()->type != '(' ) {
-	error(cur_srcpos,"%s: '(' expected", "%s: '(' §¨§¢§Í§ﬁ§ª§Û", cmd_name);
+	error(cur_srcpos,"%s: '(' expected", "%s: '(' „Åå„ÅÇ„Çä„Åæ„Åõ„Çì", cmd_name);
     }
 
     for(;;) {
@@ -2332,14 +2333,14 @@ char  *cmd_name;
 	    break;
 	default:
 	    error(cur_srcpos, "%s: Parse error in arguments",
-		   "%s: ∞˙øÙ§À¥÷∞„§§§¨§¢§Í§ﬁ§π", cmd_name);
+		   "%s: ÂºïÊï∞„Å´ÈñìÈÅï„ÅÑ„Åå„ÅÇ„Çä„Åæ„Åô", cmd_name);
 	}
 	
 	if( get_token()->type == ')' ) {
 	    break;
 	} else if( cur_token->type != ',' ) {
 	    error(cur_srcpos, "%s: Parse error in arguments",
-		   "%s: ∞˙øÙ§À¥÷∞„§§§¨§¢§Í§ﬁ§π", cmd_name);
+		   "%s: ÂºïÊï∞„Å´ÈñìÈÅï„ÅÑ„Åå„ÅÇ„Çä„Åæ„Åô", cmd_name);
 	}
     }
 }
@@ -2357,7 +2358,7 @@ char  *cmd_name;
     Token  *tp;
 
     if( get_token()->type != '(' ) {
-	error(cur_srcpos,"%s: '(' expected", "%s: '(' §¨§¢§Í§ﬁ§ª§Û", cmd_name);
+	error(cur_srcpos,"%s: '(' expected", "%s: '(' „Åå„ÅÇ„Çä„Åæ„Åõ„Çì", cmd_name);
     }
 
     for(;;) { 
@@ -2395,10 +2396,10 @@ char  *cmd_name;
 
  err_parse:
     error(cur_srcpos, "%s: Parse error in arguments",
-	   "%s: ∞˙øÙ§À¥÷∞„§§§¨§¢§Í§ﬁ§π", cmd_name);
+	   "%s: ÂºïÊï∞„Å´ÈñìÈÅï„ÅÑ„Åå„ÅÇ„Çä„Åæ„Åô", cmd_name);
  err_range:
     error(cur_srcpos, "%s: Number out of range",
-	   "%s: »÷πÊ§¨»œ∞œ≥∞§«§π", cmd_name);
+	   "%s: Áï™Âè∑„ÅåÁØÑÂõ≤Â§ñ„Åß„Åô", cmd_name);
 }
 
 /*
@@ -2434,11 +2435,11 @@ do_attach()
     int  enable;
 
     if( get_token()->type != '(' ) {
-	error(cur_srcpos, "attach: '(' expected", "attach: '(' §¨§¢§Í§ﬁ§ª§Û");
+	error(cur_srcpos, "attach: '(' expected", "attach: '(' „Åå„ÅÇ„Çä„Åæ„Åõ„Çì");
     }
     if( (tp = parse_cmds(MACRO_CMDS))->type != T_EFFCLASS ) {
 	error(cur_srcpos, "attach: effector class name expected", 
-	       "attach: •®•’•ß•Ø•ø•Ø•È•πÃæ§¨§¢§Í§ﬁ§ª§Û");
+	       "attach: „Ç®„Éï„Çß„ÇØ„Çø„ÇØ„É©„ÇπÂêç„Åå„ÅÇ„Çä„Åæ„Åõ„Çì");
     }
 
     dp = tp->u.dp;	/* dp is class name */
@@ -2446,13 +2447,13 @@ do_attach()
 
     if( get_token()->type != ',' ) {
 	error(cur_srcpos, "attach: Too few arguments", 
-	       "attach: ∞˙øÙ§¨¬≠§Í§ﬁ§ª§Û");
+	       "attach: ÂºïÊï∞„ÅåË∂≥„Çä„Åæ„Åõ„Çì");
     }
 
     /* get instance name */
     if( (tp = get_token())->type != T_ID ) {
 	error(cur_srcpos, "attach: Bad instance name",
-	       "attach: •§•Û•π•ø•Û•πÃæ§¨¥÷∞„§√§∆§§§ﬁ§π");
+	       "attach: „Ç§„É≥„Çπ„Çø„É≥„ÇπÂêç„ÅåÈñìÈÅï„Å£„Å¶„ÅÑ„Åæ„Åô");
     }
     if( !(iname = strdup(tp->u.id.name)) ) {
 	err_nomem("do_attach");
@@ -2463,7 +2464,7 @@ do_attach()
 	if( !(op = get_expression()) || op->o_type != O_INT ||
 	   get_token()->type != ')' ) {
 	    error(cur_srcpos, "attach: Bad enable/disable specifier",
-		  "attach: enable/disable ªÿƒÍ§¨¥÷∞„§√§∆§§§ﬁ§π");
+		  "attach: enable/disable ÊåáÂÆö„ÅåÈñìÈÅï„Å£„Å¶„ÅÑ„Åæ„Åô");
 	}
 	enable = (op->o_val != 0);
     } else if( tp->type == ')' ) {
@@ -2503,7 +2504,7 @@ do_enable()
 	}
     } else {
 	error(cur_srcpos, "%s: Not an effector (class or instance) name",
-	      "%s: •®•’•ß•Ø•øÃæ§«§œ§¢§Í§ﬁ§ª§Û", dp->name);
+	      "%s: „Ç®„Éï„Çß„ÇØ„ÇøÂêç„Åß„ÅØ„ÅÇ„Çä„Åæ„Åõ„Çì", dp->name);
     }
 
     free(mp);
@@ -2554,7 +2555,7 @@ do_ecode()
     }
     if( cnt != 1 || d != 1 ) {
 	error(cur_srcpos, "ecode: Must be just one event type",
-	      "ecode: •§•Ÿ•Û•»∑ø§œ£±§ƒ§«§ §±§Ï§–§ §Í§ﬁ§ª§Û");
+	      "ecode: „Ç§„Éô„É≥„ÉàÂûã„ÅØÔºë„Å§„Åß„Å™„Åë„Çå„Å∞„Å™„Çä„Åæ„Åõ„Çì");
     }
     
     pushbk_int((PmmlInt)ecode);
@@ -2587,7 +2588,7 @@ EffInst  *eip;
     if( mp->nargs == 0 ) {
 	if( !(flags & EFF_ACTION) ) {
 	    error(cur_srcpos, "%s: No effector name",
-		  "%s: •®•’•ß•Ø•øÃæ§¨§¢§Í§ﬁ§ª§Û", cmdname);
+		  "%s: „Ç®„Éï„Çß„ÇØ„ÇøÂêç„Åå„ÅÇ„Çä„Åæ„Åõ„Çì", cmdname);
 	}
 	/* eip must be already set */
     } else {
@@ -2603,7 +2604,7 @@ EffInst  *eip;
 	    eclass = 1;
 	} else {
 	    error(cur_srcpos, "%s: Not an effector (class or instance) name",
-		  "%s: •®•’•ß•Ø•øÃæ§«§œ§¢§Í§ﬁ§ª§Û", dp->name);
+		  "%s: „Ç®„Éï„Çß„ÇØ„ÇøÂêç„Åß„ÅØ„ÅÇ„Çä„Åæ„Åõ„Çì", dp->name);
 	}
     }
 
@@ -2659,7 +2660,7 @@ EffInst  *eip;
     if( mp->nargs == 0 ) {
 	if( !(flags & EFF_ACTION) ) {
 	    error(cur_srcpos, "%s: No effector name",
-		  "%s: •®•’•ß•Ø•øÃæ§¨§¢§Í§ﬁ§ª§Û", cmdname);
+		  "%s: „Ç®„Éï„Çß„ÇØ„ÇøÂêç„Åå„ÅÇ„Çä„Åæ„Åõ„Çì", cmdname);
 	}
 	/* eip must be already set */
     } else {
@@ -2675,7 +2676,7 @@ EffInst  *eip;
 	    eclass = 1;
 	} else {
 	    error(cur_srcpos, "%s: Not an effector (class or instance) name",
-		  "%s: •®•’•ß•Ø•øÃæ§«§œ§¢§Í§ﬁ§ª§Û", dp->name);
+		  "%s: „Ç®„Éï„Çß„ÇØ„ÇøÂêç„Åß„ÅØ„ÅÇ„Çä„Åæ„Åõ„Çì", dp->name);
 	}
     }
 
@@ -2726,7 +2727,7 @@ Event  *ep;
     if( !(flags & EFF_ACTION) || ep == NULL || (ep->type & ETYPE) >= E_Meta ) {
 	error(cur_srcpos, 
 	      "ctrl_any: Must be executed in an action for control change",
-	      "ctrl_any: •≥•Û•»•Ì°º•Î•¡•ß•Û•∏Õ—•¢•Ø•∑•Á•Û∞ ≥∞§«§œº¬π‘§«§≠§ﬁ§ª§Û");
+	      "ctrl_any: „Ç≥„É≥„Éà„É≠„Éº„É´„ÉÅ„Çß„É≥„Ç∏Áî®„Ç¢„ÇØ„Ç∑„Éß„É≥‰ª•Â§ñ„Åß„ÅØÂÆüË°å„Åß„Åç„Åæ„Åõ„Çì");
     }
 
     ep1 = copy_event(ep);
@@ -2735,7 +2736,7 @@ Event  *ep;
 	PmmlFloat  f;
 	if( !isnumber(mp->arg[1].o_type) ) {
 	    error(cur_srcpos, "ctrl_any: Inappropriate type of control value",
-		  "ctrl_any: •≥•Û•»•Ì°º•Î√Õ§¨∑ø§¨…‘≈¨≈ˆ§«§π");
+		  "ctrl_any: „Ç≥„É≥„Éà„É≠„Éº„É´ÂÄ§„ÅåÂûã„Åå‰∏çÈÅ©ÂΩì„Åß„Åô");
 	}
 	conv_to_float(&mp->arg[1], &f);
 	ep1->u.cp->cval = f;
@@ -2798,7 +2799,7 @@ int  enable;       /* initial value of effector enable flag (1 or 0) */
 	if( (idp = search_dict(SD_MINE, iname, ihash, 
 			       NULL, cur_thd->pb->calls)) ) {
 	    error(cur_srcpos, "%s: already defined",
-		  "%s: ¥˚§ÀƒÍµ¡∫—§ﬂ§«§π", iname);
+		  "%s: Êó¢„Å´ÂÆöÁæ©Ê∏à„Åø„Åß„Åô", iname);
 	}
 	if( !(idp = (DicEnt *) malloc(sizeof(DicEnt))) ) {
 	    err_nomem("attach_effector");
@@ -2875,7 +2876,7 @@ int  enable;       /* initial value of effector enable flag (1 or 0) */
     cur_thd->effs = eip;
     if( cur_thd->eebv & 0x80000000 ) {
 	error(cur_srcpos, "More than 31 effectors are attached",
-	      "32∏ƒ∞ æÂ§Œ•®•’•ß•Ø•ø§¨•¢•ø•√•¡§µ§Ï§ﬁ§∑§ø");
+	      "32ÂÄã‰ª•‰∏ä„ÅÆ„Ç®„Éï„Çß„ÇØ„Çø„Åå„Ç¢„Çø„ÉÉ„ÉÅ„Åï„Çå„Åæ„Åó„Åü");
     }
     cur_thd->eebv = (cur_thd->eebv << 1) | enable;
 }
@@ -3358,7 +3359,7 @@ EffInst  *eip;
 
     /* take event type from "etype" */
     if( eip->etype->dic_obj.o_type != O_INT ) {
-	error(cur_srcpos, "Illegal type of 'etype'", "'etype' §Œ∑ø§¨∞„§§§ﬁ§π");
+	error(cur_srcpos, "Illegal type of 'etype'", "'etype' „ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
     }
     etype = E_Ctrl + conv_funcno(eip->etype->dic_obj.o_val);
     if( (ep->type & CTYPE) && etype >= E_ModeMsg && etype < E_VCtrl ) {
@@ -3375,7 +3376,7 @@ EffInst  *eip;
     if( ep->type & CTYPE ) {	/* continuous type */
 	PmmlFloat  f;
 	if( !isnumber(eip->val->dic_obj.o_type) ) { 
-	    error(cur_srcpos, "Illegal type of 'val'", "'val' §Œ∑ø§¨∞„§§§ﬁ§π");
+	    error(cur_srcpos, "Illegal type of 'val'", "'val' „ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
 	}
 	conv_to_float(&eip->val->dic_obj, &f);
 	ep->u.cp->cval = f;
@@ -3407,7 +3408,7 @@ EffInst  *eip;
 
     /* take data array from "val" */
     if( eip->val->dic_obj.o_type != O_ARRAY ) {
-	error(cur_srcpos, "Illegal type of 'val'", "'val' §Œ∑ø§¨∞„§§§ﬁ§π");
+	error(cur_srcpos, "Illegal type of 'val'", "'val' „ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
     }
     ap = eip->val->dic_obj.o_ap;
     if( ep->ev_data )  free(ep->ev_data);
@@ -3418,7 +3419,7 @@ EffInst  *eip;
     for( p = ep->ev_data, i = 0; i < ap->size; i++ ) {
 	if( !isnumber(array_ref(ap,i).o_type) ) {
 	    error(cur_srcpos, "val: Invalid type of array element",
-		  "val: «€ŒÛÕ◊¡«§Œ∑ø§¨∞„§§§ﬁ§π");
+		  "val: ÈÖçÂàóË¶ÅÁ¥†„ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
 	}
 	conv_to_int(&array_ref(ap,i), &ival); 
 	*p++ = ival & dmask;
@@ -3451,7 +3452,7 @@ int  raw_meta;
     /* take data array from "val" */
     if( ep->type > E_TextEnd || raw_meta ) {
 	if( eip->val->dic_obj.o_type != O_ARRAY ) {
-	    error(cur_srcpos, "Illegal type of 'val'", "'val' §Œ∑ø§¨∞„§§§ﬁ§π");
+	    error(cur_srcpos, "Illegal type of 'val'", "'val' „ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
 	}
 	ap = eip->val->dic_obj.o_ap;
 	if( ep->ev_data )  free(ep->ev_data);
@@ -3462,7 +3463,7 @@ int  raw_meta;
 	for( p = ep->ev_data, i = 0; i < ap->size; i++ ) {
 	    if( !isnumber(array_ref(ap,i).o_type) ) {
 		error(cur_srcpos, "val: Invalid type of array element",
-		      "val: «€ŒÛÕ◊¡«§Œ∑ø§¨∞„§§§ﬁ§π");
+		      "val: ÈÖçÂàóË¶ÅÁ¥†„ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
 	    }
 	    conv_to_int(&array_ref(ap,i), &ival); 
 	    *p++ = ival;
@@ -3470,14 +3471,14 @@ int  raw_meta;
 	ep->ev_len = ap->size;
     } else if( ep->type == E_Seqno ) {
 	if( !isnumber(eip->val->dic_obj.o_type) ) {
-	    error(cur_srcpos, "Illegal type of 'val'", "'val' §Œ∑ø§¨∞„§§§ﬁ§π");
+	    error(cur_srcpos, "Illegal type of 'val'", "'val' „ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
 	}
 	conv_to_int(&eip->val->dic_obj, &ival); 
 	ep->ev_data[0] = ival >> 8;
 	ep->ev_data[1] = ival;
     } else {  /* text meta event */
 	if( eip->val->dic_obj.o_type != O_STRING ) {
-	    error(cur_srcpos, "Illegal type of 'val'", "'val' §Œ∑ø§¨∞„§§§ﬁ§π");
+	    error(cur_srcpos, "Illegal type of 'val'", "'val' „ÅÆÂûã„ÅåÈÅï„ÅÑ„Åæ„Åô");
 	}
 	i = strlen(eip->val->dic_obj.o_str);
 	if( ep->ev_data )  free(ep->ev_data);
@@ -3507,7 +3508,7 @@ EffClass  *ecp;
 
     if( ecp->instances ) {
 	error(cur_srcpos, "%s: can not delete/redefine active effector class",
-	      "%s: ª»Õ—√Ê§Œ•®•’•ß•Ø•ø•Ø•È•π§Ú∫ÔΩ¸°ø∫∆ƒÍµ¡§π§Î§≥§»§œ§«§≠§ﬁ§ª§Û",
+	      "%s: ‰ΩøÁî®‰∏≠„ÅÆ„Ç®„Éï„Çß„ÇØ„Çø„ÇØ„É©„Çπ„ÇíÂâäÈô§ÔºèÂÜçÂÆöÁæ©„Åô„Çã„Åì„Å®„ÅØ„Åß„Åç„Åæ„Åõ„Çì",
 	      ecp->dp->name);
     }
 
@@ -3805,7 +3806,7 @@ warn_time(time)
 Rational  *time;
 {
     warn(cur_srcpos, "Time is negative (adjusted to zero)  (t=%s)",
-	 "ª˛πÔ§Œ√Õ§¨…È§«§π(£∞§ÀΩ§¿µ§µ§Ï§ﬁ§π)  (t=%s)", rstring(time));
+	 "ÊôÇÂàª„ÅÆÂÄ§„ÅåË≤†„Åß„Åô(Ôºê„Å´‰øÆÊ≠£„Åï„Çå„Åæ„Åô)  (t=%s)", rstring(time));
 }
 
 static
@@ -3813,7 +3814,7 @@ err_trk(tk)
 int  tk;
 {
     error(cur_srcpos, "Track number out of range (tk=%d)", 
-	  "•»•È•√•Ø»÷πÊ§¨»œ∞œ≥∞§«§π (tk=%d)", tk);
+	  "„Éà„É©„ÉÉ„ÇØÁï™Âè∑„ÅåÁØÑÂõ≤Â§ñ„Åß„Åô (tk=%d)", tk);
 }
 
 static
@@ -3821,7 +3822,7 @@ err_chan(ch)
 int  ch;
 {
     error(cur_srcpos, "Channel number out of range (ch=%d)", 
-	  "•¡•„•Õ•Î»÷πÊ§¨»œ∞œ≥∞§«§π (ch=%d)", ch);
+	  "„ÉÅ„É£„Éç„É´Áï™Âè∑„ÅåÁØÑÂõ≤Â§ñ„Åß„Åô (ch=%d)", ch);
 }
 
 static
@@ -3829,7 +3830,7 @@ err_funcno(fn)
 int  fn;
 {
     error(cur_srcpos, "Function number out of range (func_no=%d)", 
-	  "•’•°•Û•Ø•∑•Á•Û»÷πÊ§¨»œ∞œ≥∞§«§π (func_no=%d)", fn);
+	  "„Éï„Ç°„É≥„ÇØ„Ç∑„Éß„É≥Áï™Âè∑„ÅåÁØÑÂõ≤Â§ñ„Åß„Åô (func_no=%d)", fn);
 }
 
 static
@@ -3837,7 +3838,7 @@ warn_note(note)
 int  note;
 {
     warn(cur_srcpos, "Note number out of range (note=%d)", 
-	 "•Œ°º•»»÷πÊ§¨»œ∞œ≥∞§«§π (note=%d)", note);
+	 "„Éé„Éº„ÉàÁï™Âè∑„ÅåÁØÑÂõ≤Â§ñ„Åß„Åô (note=%d)", note);
 }
 
 static void
@@ -3845,5 +3846,5 @@ err_undef(dp)
 DicEnt  *dp;
 {
     error(cur_srcpos, "'%s' is undefined",
-	  "'%s' §¨ƒÍµ¡§µ§Ï§∆§§§ﬁ§ª§Û", dp->name);
+	  "'%s' „ÅåÂÆöÁæ©„Åï„Çå„Å¶„ÅÑ„Åæ„Åõ„Çì", dp->name);
 }

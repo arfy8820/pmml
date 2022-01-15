@@ -11,7 +11,7 @@ LIBDIR  = /usr/local/lib/pmml
 BINDIR  = /usr/local/bin
 
 # Command name of the C compiler
-CC	= cc -m32
+CC	= cc
 
 # C compiler options
 CCOPTS	= -O

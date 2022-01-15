@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <unistd.h>
 #define	__SMF_C__
 #include "smf.h"
 

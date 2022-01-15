@@ -122,7 +122,7 @@ char  *arg_spec;
 {
     if( dp->type != D_LocalMacro && dp->type != D_ThreadMacro ) {
 	error(cur_srcpos, "%s: already defined as a different name type",
-	      "%s: Â¾¤Î¼ïÎà¤ÎÌ¾Á°¤È¤·¤Æ´û¤ËÄêµÁºÑ¤ß¤Ç¤¹¡£", dp->name);
+	      "%s: ä»–ã®ç¨®é¡žã®åå‰ã¨ã—ã¦æ—¢ã«å®šç¾©æ¸ˆã¿ã§ã™ã€‚", dp->name);
     }
     free_object(&dp->dic_obj);
     dp->dic_obj = *objp;
@@ -294,7 +294,7 @@ DicEnt  *dp;
     if( dp->active ) {
 	error(cur_srcpos, 
 	      "%s: Unexpected deletion of an active dictionary entry (See manual for details)",
-	      "%s: ³èÆ°Ãæ¤Î¼­½ñ¥¨¥ó¥È¥ê¤¬ÉÔÎ¸¤Ëºï½ü¤µ¤ì¤Þ¤·¤¿¡Ê¾ÜºÙ¤Ï¥Þ¥Ë¥å¥¢¥ë»²¾È¡Ë",
+	      "%s: æ´»å‹•ä¸­ã®è¾žæ›¸ã‚¨ãƒ³ãƒˆãƒªãŒä¸æ…®ã«å‰Šé™¤ã•ã‚Œã¾ã—ãŸï¼ˆè©³ç´°ã¯ãƒžãƒ‹ãƒ¥ã‚¢ãƒ«å‚ç…§ï¼‰",
 	      dp->name);
     } else {	
 	free(dp->name);

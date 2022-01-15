@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <string.h>
 /* ANSI-C code produced by gperf version 3.1 */
 /* Command-line: gperf -D -p -t -G  */
 /* Computed positions: -k'1,3,$' */

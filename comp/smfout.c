@@ -103,12 +103,12 @@ EffInst  *eip;
     p->resolution = argv[1].o_val;
     if( p->resolution < 0 ) {
 	error(cur_srcpos, "smfout: Bad resolution value", 
-	      "smfout: Ê¬²òÇ½¤ÎÃÍ¤¬´Ö°ã¤Ã¤Æ¤¤¤Þ¤¹");
+	      "smfout: åˆ†è§£èƒ½ã®å€¤ãŒé–“é•ã£ã¦ã„ã¾ã™");
     }
     p->format = argv[2].o_val;
     if( p->format < -1 || p->format > 2 ) {
 	error(cur_srcpos, "smfout: Bad format value", 
-	      "smfout: format ¤ÎÃÍ¤¬´Ö°ã¤Ã¤Æ¤¤¤Þ¤¹");
+	      "smfout: format ã®å€¤ãŒé–“é•ã£ã¦ã„ã¾ã™");
     }
     p->no_run_stat = argv[3].o_val;
     p->pack_tracks = argv[4].o_val;
@@ -118,21 +118,21 @@ EffInst  *eip;
     }
     if( in_range(0, p->track_range, 1, 1, NULL) == -1 ) {
 	error(cur_srcpos, "smfout: Bad track number specifier", 
-	      "smfout: ¥È¥é¥Ã¥¯ÈÖ¹æ»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Þ¤¹");
+	      "smfout: ãƒˆãƒ©ãƒƒã‚¯ç•ªå·æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™");
     }
     p->exist_begin = p->exist_end = 0;
     if( argc > 8 && * argv[8].o_str ) {
 	p->exist_begin = 1;
 	if( analy_songpos(argv[8].o_str, &p->pos_begin, 0) == -1 ) {
 	    error(cur_srcpos, "smfout: Bad song position specifier", 
-		  "smfout: ±éÁÕ°ÌÃÖ»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Þ¤¹");
+		  "smfout: æ¼”å¥ä½ç½®æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™");
 	}
     }
     if( argc > 9 && * argv[9].o_str ) {
 	p->exist_end = 1;
 	if( analy_songpos(argv[9].o_str, &p->pos_end, 1) == -1 ) {
 	    error(cur_srcpos, "smfout: Bad song position specifier", 
-		  "smfout: ±éÁÕ°ÌÃÖ»ØÄê¤¬´Ö°ã¤Ã¤Æ¤¤¤Þ¤¹");
+		  "smfout: æ¼”å¥ä½ç½®æŒ‡å®šãŒé–“é•ã£ã¦ã„ã¾ã™");
 	}
     }
 
@@ -187,7 +187,7 @@ EffInst  *eip;
     if( eip->ebuf.ntrks == 0 ) {
 	p->no_genfile = 1;
 	warn(0L, "%s: No events - no output file generated",
-	     "%s: ¥¤¥Ù¥ó¥È¤¬£±¤Ä¤âÌµ¤¤¤¿¤á½ÐÎÏ¥Õ¥¡¥¤¥ë¤ÏÀ¸À®¤µ¤ì¤Þ¤»¤ó", 
+	     "%s: ã‚¤ãƒ™ãƒ³ãƒˆãŒï¼‘ã¤ã‚‚ç„¡ã„ãŸã‚å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã¯ç”Ÿæˆã•ã‚Œã¾ã›ã‚“", 
 	     p->fname);
 	return;
     }
@@ -217,7 +217,7 @@ EffInst  *eip;
 	} else  t2 = r_max;
 	if( rlesseq(&t2, &t1) ) {
 	    error(0L, "%s: begin-time should be earlier than end-time",
-		  "%s: ±éÁÕ½ªÎ»»þ¹ï¤¬³«»Ï»þ¹ï°ÊÁ°¤Ë¤Ê¤Ã¤Æ¤¤¤Þ¤¹", p->fname);
+		  "%s: æ¼”å¥çµ‚äº†æ™‚åˆ»ãŒé–‹å§‹æ™‚åˆ»ä»¥å‰ã«ãªã£ã¦ã„ã¾ã™", p->fname);
 	}
 	post_process(&eip->ebuf, eflags, &t1, &t2, &len);
 	rsub(&eip->thd->parent->reg.t, &t1, &len2);
@@ -233,7 +233,7 @@ EffInst  *eip;
     if( rgreater(&len2, &len) )  len = len2;
     if( len.intg < 0 ) {
 	warn(0L, "%s: begin-time is later than the song end",
-	      "%s: ±éÁÕ³«»Ï»þ¹ï¤¬¶Ê¤Î½ª¤ê°Ê¹ß¤Ë¤Ê¤Ã¤Æ¤¤¤Þ¤¹", p->fname);
+	      "%s: æ¼”å¥é–‹å§‹æ™‚åˆ»ãŒæ›²ã®çµ‚ã‚Šä»¥é™ã«ãªã£ã¦ã„ã¾ã™", p->fname);
 	len = r_zero;
     }
     p->end_time = ConvTime(len, p->resolution);
@@ -260,7 +260,7 @@ EffInst  *eip;
     if( nt == 0 ) {
 	p->no_genfile = 1;
 	warn(0L, "%s: No events - no output file generated",
-	     "%s: ¥¤¥Ù¥ó¥È¤¬£±¤Ä¤âÌµ¤¤¤¿¤á½ÐÎÏ¥Õ¥¡¥¤¥ë¤ÏÀ¸À®¤µ¤ì¤Þ¤»¤ó", 
+	     "%s: ã‚¤ãƒ™ãƒ³ãƒˆãŒï¼‘ã¤ã‚‚ç„¡ã„ãŸã‚å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã¯ç”Ÿæˆã•ã‚Œã¾ã›ã‚“", 
 	     p->fname);
 	return;
     }
@@ -334,7 +334,7 @@ EffInst  *eip;
     if( etype < E_Meta ) {  /* control change (must not be a continuous CC) */
 	if( !isnumber(ep->u.obj.o_type) ) {
 	    error(0L, "Inappropriate type of control value (time=%s func_no=%d)",
-		  "¥³¥ó¥È¥í¡¼¥ëÃÍ¤Î·¿¤¬ÉÔÅ¬Åö¤Ç¤¹ (time=%s func_no=%d)",
+		  "ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«å€¤ã®åž‹ãŒä¸é©å½“ã§ã™ (time=%s func_no=%d)",
 		  rstring(&ep->time), etype);
 	}
 	switch( etype ) {
@@ -716,11 +716,11 @@ int   warn_out;
 	    }
 	    if( !found ) {
 		error(0L, "\"%.*s\": No such track name",
-		      "\"%.*s\": ¥È¥é¥Ã¥¯Ì¾¤¬Â¸ºß¤·¤Þ¤»¤ó", lblen, label);
+		      "\"%.*s\": ãƒˆãƒ©ãƒƒã‚¯åãŒå­˜åœ¨ã—ã¾ã›ã‚“", lblen, label);
 	    } else if( warn_out && found > 1 ) {
 		warn(0L, 
 		     "\"%.*s\": More than one identical track name is found",
-		     "\"%.*s\": Æ±¤¸¥È¥é¥Ã¥¯Ì¾¤¬£²¤Ä°Ê¾å¤¢¤ê¤Þ¤¹", 
+		     "\"%.*s\": åŒã˜ãƒˆãƒ©ãƒƒã‚¯åãŒï¼’ã¤ä»¥ä¸Šã‚ã‚Šã¾ã™", 
 		     lblen, label);
 	    }
 	}
@@ -849,10 +849,10 @@ Rational  *time_rtn;  /* Output */
 	}
 	if( !marker_found ) {
 	    error(0L, "\"%s\": No such marker",
-		  "\"%s\": ¥Þ¡¼¥«¡¼¤¬Â¸ºß¤·¤Þ¤»¤ó", pos->marker);
+		  "\"%s\": ãƒžãƒ¼ã‚«ãƒ¼ãŒå­˜åœ¨ã—ã¾ã›ã‚“", pos->marker);
 	} else if( marker_found > 1 ) {
 	    warn(0L, "\"%s\": More than one equi-named marker is found",
-		  "\"%s\": Æ±¤¸Ì¾Á°¤Î¥Þ¡¼¥«¡¼¤¬£²¤Ä°Ê¾å¤¢¤ê¤Þ¤¹", pos->marker);
+		  "\"%s\": åŒã˜åå‰ã®ãƒžãƒ¼ã‚«ãƒ¼ãŒï¼’ã¤ä»¥ä¸Šã‚ã‚Šã¾ã™", pos->marker);
 	}
 
 	/* If there is no relative bar count, return now. */
@@ -932,7 +932,7 @@ Event  *ep;
 int  veloc;
 {
     warn(0L, "Velocity out of range (time=%s type=%s n=%d v=%d)",
-	 "¥Ù¥í¥·¥Æ¥£¡¼¤¬ÈÏ°Ï³°¤Ç¤¹ (time=%s type=%s n=%d v=%d)",
+	 "ãƒ™ãƒ­ã‚·ãƒ†ã‚£ãƒ¼ãŒç¯„å›²å¤–ã§ã™ (time=%s type=%s n=%d v=%d)",
 	 rstring(&ep->time), ep->type == E_NoteOn ? "NOTE_ON" : "NOTE_OFF",
 	 ep->note, veloc);
 } 
@@ -946,31 +946,31 @@ PmmlInt  val;
     case E_Bend:
 	warn(0L, 
 	     "Pitch bend value out of range (time=%s val=%ld)",
-	     "¥Ô¥Ã¥Á¥Ù¥ó¥É¤ÎÃÍ¤¬ÈÏ°Ï³°¤Ç¤¹ (time=%s val=%ld)",
+	     "ãƒ”ãƒƒãƒãƒ™ãƒ³ãƒ‰ã®å€¤ãŒç¯„å›²å¤–ã§ã™ (time=%s val=%ld)",
 	     rstring(&ep->time), val); 
 	break;
     case E_Kp:
 	warn(0L, 
 	     "Key pressure value out of range (time=%s n=%d val=%ld)",
-	     "¥­¡¼¥×¥ì¥Ã¥·¥ã¡¼¤ÎÃÍ¤¬ÈÏ°Ï³°¤Ç¤¹ (time=%s n=%d val=%ld)",
+	     "ã‚­ãƒ¼ãƒ—ãƒ¬ãƒƒã‚·ãƒ£ãƒ¼ã®å€¤ãŒç¯„å›²å¤–ã§ã™ (time=%s n=%d val=%ld)",
 	     rstring(&ep->time), ep->note, val); 
 	break;
     case E_Cpr:
 	warn(0L, 
 	     "Channel pressure value out of range (time=%s val=%ld)",
-	     "¥Á¥ã¥Í¥ë¥×¥ì¥Ã¥·¥ã¡¼¤ÎÃÍ¤¬ÈÏ°Ï³°¤Ç¤¹ (time=%s val=%ld)",
+	     "ãƒãƒ£ãƒãƒ«ãƒ—ãƒ¬ãƒƒã‚·ãƒ£ãƒ¼ã®å€¤ãŒç¯„å›²å¤–ã§ã™ (time=%s val=%ld)",
 	     rstring(&ep->time), val); 
 	break;
     case E_Prog:
 	warn(0L, 
 	     "Program number out of range (time=%s val=%ld)",
-	     "¥×¥í¥°¥é¥àÈÖ¹æ¤¬ÈÏ°Ï³°¤Ç¤¹ (time=%s val=%ld)",
+	     "ãƒ—ãƒ­ã‚°ãƒ©ãƒ ç•ªå·ãŒç¯„å›²å¤–ã§ã™ (time=%s val=%ld)",
 	     rstring(&ep->time), val); 
 	break;
     default:
 	warn(0L, 
 	     "Control value out of range (time=%s func_no=%d val=%ld)",
-	     "¥³¥ó¥È¥í¡¼¥ëÃÍ¤¬ÈÏ°Ï³°¤Ç¤¹ (time=%s func_no=%d val=%ld)",
+	     "ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«å€¤ãŒç¯„å›²å¤–ã§ã™ (time=%s func_no=%d val=%ld)",
 	     rstring(&ep->time), ep->type, val);
 	break;
     }
@@ -982,6 +982,6 @@ Event  *ep;
 PmmlFloat  fpval;
 {
     warn(0L, "Bad tempo value (time=%s val=%f)",
-	 "¥Æ¥ó¥Ý¤ÎÃÍ¤¬´Ö°ã¤Ã¤Æ¤¤¤Þ¤¹ (time=%s val=%f)",
+	 "ãƒ†ãƒ³ãƒã®å€¤ãŒé–“é•ã£ã¦ã„ã¾ã™ (time=%s val=%f)",
 	 rstring(&ep->time), fpval);
 }
