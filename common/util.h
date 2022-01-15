@@ -52,7 +52,6 @@ char *	replace_extension P((char *, char *));
 int	expand_string P((String *, int));
 char *  _addstr P((String *, char *));
 char *  prepend_path P((char **, char *));
-char *  basename P((char *));
 
 #ifdef FREE_TEST
 #   define strfree(p)  (printf("free_string: %s\n", p), free(p))

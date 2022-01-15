@@ -24,6 +24,11 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#if defined(DJGPP)
+#include <unistd.h>
+#else
+	#include <libgen.h>
+#endif
 #include "m2p.h"
 
 char	release[] = "0.2";

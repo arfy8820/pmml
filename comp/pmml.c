@@ -23,6 +23,11 @@
  */
 
 #include <stdio.h>
+#if defined(DJGPP)
+#include <unistd.h>
+#else
+	#include <libgen.h>
+#endif
 #include "pmml.h"
 #include "../common/smf.h"
 
