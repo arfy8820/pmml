@@ -40,7 +40,10 @@ typedef struct rational {
     short  num;			/* numerator */
     short  den;			/* denominator */
 #else
-    short  num;			/* numerator */
+#if defined(pmml_64BIT)
+        long pad;
+		#endif
+		short  num;			/* numerator */
     short  den;			/* denominator */
     short  intg;		/* integer part */
     unsigned short  type;	/* must be O_RATIONAL */
@@ -51,7 +54,11 @@ typedef struct rational {
 #if PMML_BIG_ENDIAN
 #  define RINIT(_intg,_num,_den) {O_RATIONAL, _intg, _num, _den}
 #else
-#  define RINIT(_intg,_num,_den) {_num, _den, _intg, O_RATIONAL}
+#if defined(PMML_64BIT)
+#  define RINIT(_intg,_num,_den) {0, _num, _den, _intg, O_RATIONAL}
+#else
+	#  define RINIT(_intg,_num,_den) {_num, _den, _intg, O_RATIONAL}
+#endif
 #endif
 
 /* compare two rational numbers */
