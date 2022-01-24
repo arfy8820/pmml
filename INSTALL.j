@@ -1,38 +1,38 @@
-�ץ������򥳥�ѥ��뤹��ˤϡ��ʲ��μ��˽��äƲ�������
+プログラムをコンパイルするには、以下の手順に従って下さい。
 
-  1. ���Υǥ��쥯�ȥ�ˤ��� Makefile ����������Ƥ�������ѥ�᡼����Ŭ��
-     �ѹ����롣
-  2. 'make' ��¹Ԥ��롣
+  1. このディレクトリにある Makefile 中で定義されている設定パラメータを適宜
+     変更する。
+  2. 'make' を実行する。
 
 
-PMML����ѥ��餬����������ѥ��뤵�줿���ɤ�����Ĵ�٤�ˤϡ�
+PMMLコンパイラが正しくコンパイルされたかどうかを調べるには、
 
   'make test'
 
-���ǤäƲ�����������ˤ�äơ������Ĥ��Υƥ��ȥ����ɤ��Ф���PMML
-����ѥ��餬�¹Ԥ��졢��̤�MIDI�ե�����Ȼ�����MIDI�ե�����Ȥ�
-�ȹ礬�Ԥ��ޤ��� "test1.mid" �ޤ��� "test2.mid" �Ǿȹ�˼��Ԥ���
-���ϡ�PMML����ѥ��餬��������ǽ���Ƥ��ʤ����Ȥ��̣���ޤ���
-"test3.mid" �Ǽ��Ԥ������ˤϡ�ɬ������PMML����ѥ�������꤬����Ȥ�
-�����ޤ�����ư�������黻����ߴ����ˤ�ꡢ�ޥ����C����ѥ���ˤ�äƤ�
-�Ϥ��˰ۤʤ�٥����ƥ��䥳��ȥ������ͤ���������뤳�Ȥ�����ޤ���
-"test3.mid" �� "test3.ref" �� "pmml -e'dump()' -l MIDIFILE" �ˤ�ä�
-ASCII �ƥ����Ȥ��Ѵ������㤤������ˤʤ�ʤ����٤Ǥ��뤳�Ȥ��ǧ���Ʋ�������
+と打って下さい。これによって、いくつかのテストコードに対してPMML
+コンパイラが実行され、結果のMIDIファイルと参照用MIDIファイルとの
+照合が行われます。 "test1.mid" または "test2.mid" で照合に失敗した
+場合は、PMMLコンパイラが正しく機能していないことを意味します。
+"test3.mid" で失敗した場合には、必ずしもPMMLコンパイラに問題があるとは
+言えません。浮動小数点演算の非互換性により、マシンやCコンパイラによっては
+僅かに異なるベロシティやコントロール値が生成されることがあります。
+"test3.mid" と "test3.ref" を "pmml -e'dump()' -l MIDIFILE" によって
+ASCII テキストに変換し、違いが問題にならない程度であることを確認して下さい。
 
 
-����ѥ��뤵�줿�¹ԥե�����ȥ饤�֥��ե�����򥤥󥹥ȡ��뤹��ˤϡ�
+コンパイルされた実行ファイルとライブラリファイルをインストールするには、
 
   'make install'
 
-���ǤäƲ�������
+と打って下さい。
 
-Emacs Lisp �Υץ������ϡ�make install �Ǥϥ��󥹥ȡ��뤵��ޤ���Τǡ�
-emacs/pmml-mode.el ��Ŭ�ڤʾ��˼�ư�ǥ��ԡ����Ʋ�������
+Emacs Lisp のプログラムは、make install ではインストールされませんので、
+emacs/pmml-mode.el を適切な場所に手動でコピーして下さい。
 
-�ޥ˥奢��⡢make install �Ǥϥ��󥹥ȡ��뤵��ޤ���manual ��
-�ǥ��쥯�ȥ�˰ܤꡢmake ��¹Ԥ���Info������dvi������HTML������
-�����줫���Ѵ������塢ɬ�פʤ�Х��󥹥ȡ�����˼�ư�ǥ��ԡ����Ʋ�������
-�ʤ���Info�������Ѵ�����ˤ� mule �ޤ��� nemacs ����dvi�������Ѵ�����ˤ�
-TeX �� textinfo.tex �ʤɤ�������ܸ첽���줿��Ρˤ���HTML�������Ѵ�����ˤ� 
-texi2html��http://wwwcn.cern.ch/dci/texi2html/��������ġˤ����줾��ɬ�פǤ���
+マニュアルも、make install ではインストールされません。manual の
+ディレクトリに移り、make を実行してInfo形式、dvi形式、HTML形式の
+いずれかに変換した後、必要ならばインストール先に手動でコピーして下さい。
+なお、Info形式に変換するには mule または nemacs が、dvi形式に変換するには
+TeX と textinfo.tex （どちらも日本語化されたもの）が、HTML形式に変換するには 
+texi2html（http://wwwcn.cern.ch/dci/texi2html/から入手可）がそれぞれ必要です。
 
