@@ -9,7 +9,7 @@ $i = 4
 under_score = 5
 p5c = 6
 $_z = 7
-´Á»ú = 8
+æ¼¢å­— = 8
 assert(id, 1)
 assert(x, 2)
 assert($x, 3)
@@ -17,4 +17,4 @@ assert($i, 4)
 assert(under_score, 5)
 assert(p5c, 6)
 assert($_z, 7)
-assert(´Á»ú, 8)
+assert(æ¼¢å­—, 8)
