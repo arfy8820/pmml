@@ -784,7 +784,7 @@ struct ibuffer  *ip;
     Token  *tp;
     int  state = 0;
     PmmlInt  val;
-    PmmlFloat  fpval;
+    PmmlFloat  in_fpval;
     double  atof();
     int	 flags, octave;
     int  dotcnt;
@@ -939,7 +939,7 @@ struct ibuffer  *ip;
 	    rimult(&tp->u.obj.r, val, &tp->u.obj.r); 
 	} else if( state == AFTER_FLOAT ) {
 	    Rational  rtmp;
-	    float_to_rational(fpval * (IRES * 4), &rtmp);
+	    float_to_rational(in_fpval * (IRES * 4), &rtmp);
 	    rmult(&tp->u.obj.r, &rtmp, &tp->u.obj.r); 
 	}
 
@@ -1039,13 +1039,13 @@ struct ibuffer  *ip;
 
       number_float_end:
 	addchar(ip->strbuf, 0);
-	fpval = atof(ip->strbuf.buf);
+	in_fpval = atof(ip->strbuf.buf);
 	if( isalpha(c) ) {	/* Is it a rational constatnt? */
 	    state = AFTER_FLOAT;
 	    goto again;
 	}
 	tp->type = T_NUMBER;
-	tp->u.obj.fpval = fpval;
+	tp->u.obj.fpval = in_fpval;
 	UnGetC(ip);
 	break;
 

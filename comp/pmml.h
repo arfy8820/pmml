@@ -94,6 +94,15 @@
 #endif
 
 /********************************************************************
+ * Make the code adapt to bit-depth of the machine. *
+ ********************************************************************/
+#      if defined(__x86_64__) || defined(__arm64)
+#      define PMML_LARGE_PTR 1
+#else
+	#define PMML_LARGE_PTR 0
+#endif
+
+/********************************************************************
  * Definitions for making the code adaptable to either ANSI C or non-ANSI C 
  ********************************************************************/
 #if defined(__STDC__) && !defined(PROTOTYPE)
@@ -121,7 +130,7 @@ typedef double PmmlFloat;
  * Object - the data type of the PMML
  *   Each macro is associated with an object.
  *   Each array element is an object.
- *   Each object occupies 8 bytes.
+ *   Each object occupies 8 bytes on 32-bit systems, 16 on 64-bit ones.
  */
 /* Objects other than floating numbers are represented
    by 'NaN' of the IEEE floating point format. */
@@ -150,7 +159,10 @@ typedef union object {
 	short  pad2;
 	short  pad3;
 #else
-	short  pad1;
+	#if PMML_LARGE_PTR
+long pad0;
+#endif
+short  pad1;
 	short  pad2;
 	short  pad3;
 	unsigned short  type;	/* O_XXX */
@@ -159,9 +171,18 @@ typedef union object {
 
     Rational  r;
 
-    PmmlFloat  fpval;		/* for O_FLOAT */ 
+    #if PMML_LARGE_PTR
+	struct {
+		long pad;
+		#endif
+	PmmlFloat  fpval;		/* for O_FLOAT */ 
 
-    struct {
+    #if PMML_LARGE_PTR
+	} _f;
+	#define fpval  _f.fpval
+	#endif
+	
+	struct {
 #if PMML_BIG_ENDIAN
 	long   pad;
 #endif

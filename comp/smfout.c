@@ -304,7 +304,7 @@ EffInst  *eip;
     unsigned char  msg[3];
     long  t, dtime;
     PmmlInt  val;
-    PmmlFloat  fpval;
+    PmmlFloat  in_fpval;
     int  veloc;
     int  etype;
 
@@ -394,22 +394,22 @@ EffInst  *eip;
 	    break;
 	    
 	case E_Vmag:
-	    conv_to_float(&ep->u.obj, &fpval); 
-	    p->vmag[ch] = fpval;
+	    conv_to_float(&ep->u.obj, &in_fpval); 
+	    p->vmag[ch] = in_fpval;
 	    break;
 	    
 	case E_Tempo:
 	case E_RTempo:
-	    conv_to_float(&ep->u.obj, &fpval); 
+	    conv_to_float(&ep->u.obj, &in_fpval); 
 	    if( etype == E_Tempo ) { 
-		p->cur_tempo = fpval;
+		p->cur_tempo = in_fpval;
 	    } else {
-		fpval = p->cur_tempo * fpval;
+		in_fpval = p->cur_tempo * in_fpval;
 	    }
-	    if( fpval <= 0 ) {
-		warn_tempo(ep, fpval); fpval = 120.0;
+	    if( in_fpval <= 0 ) {
+		warn_tempo(ep, in_fpval); in_fpval = 120.0;
 	    }
-	    val = floor(6e+7 / fpval + .5);
+	    val = floor(6e+7 / in_fpval + .5);
 	    smf_tempo(p->mfp, dtime, val);
 	    p->prev_time = t;
 	    break;
@@ -977,11 +977,11 @@ PmmlInt  val;
 }
 
 static void
-warn_tempo(ep, fpval)
+warn_tempo(ep, in_fpval)
 Event  *ep;
-PmmlFloat  fpval;
+PmmlFloat  in_fpval;
 {
     warn(0L, "Bad tempo value (time=%s val=%f)",
 	 "テンポの値が間違っています (time=%s val=%f)",
-	 rstring(&ep->time), fpval);
+	 rstring(&ep->time), in_fpval);
 }

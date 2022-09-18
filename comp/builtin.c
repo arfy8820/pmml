@@ -1249,7 +1249,7 @@ Object  *argv;
     char fchar;
     int  width, base;
     int	 prec;			/* precision: negative if not specified */
-    unsigned long  num;
+    unsigned int  num;
     PmmlFloat  fpnum;
     char buf[MAXPREC+41], *b;	/* buffer for integer-part digits 
 				   or formatted floating-point number.
@@ -1323,8 +1323,8 @@ Object  *argv;
 	case 'd':
 	    base = 10;
 	    get_intarg(num);
-	    if( (long)num < 0 ) {
-		num = - (long)num;
+	    if( (int)num < 0 ) {
+		num = - (int)num;
 		sign = '-';
 	    } 
 	    goto number;
