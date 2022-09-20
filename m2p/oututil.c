@@ -675,7 +675,7 @@ int  indent;		/* column number where the command string starts */
     }
 
     indent += strlen(buf);
-    fprintf(OUT, buf);
+    fprintf(OUT, "%s", buf);
 
     col = indent;
     for( i = 0; i < len; i++ ) {

@@ -528,7 +528,7 @@ int  strquote;
     
     switch( obj->o_type ) {
     case O_INT:
-	fprintf(fp, "%ld", obj->o_val);
+	fprintf(fp, "%d", obj->o_val);
 	break;
     case O_RATIONAL:
 	fprintf(fp, "%s", rstring(&obj->r));
@@ -561,7 +561,7 @@ int  strquote;
 /*
  * examine the identity of two objects
  *
-/* Return value:  0 - equal    1 - not equal    2 - type mismatch */
+ * Return value:  0 - equal    1 - not equal    2 - type mismatch */
 int
 compare_object(op1, op2)
 Object  *op1, *op2;

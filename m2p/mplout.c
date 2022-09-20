@@ -580,7 +580,7 @@ int  is_first;		/* true if the chord lies at the top of measure */
     if( chord_ch >= 0 && chord_ch != state->ch &&
        (next_note && next_note->ch + 1 == chord_ch ||
 	!next_note && is_first) && !opt->ignore_chan ) {
-	sprintf(buf, "ch=%d", chord_ch);
+	sprintf(buf, "ch=%ld", chord_ch);
 	output_string(buf, indent);
 	state->ch = chord_ch;
     }
@@ -589,7 +589,7 @@ int  is_first;		/* true if the chord lies at the top of measure */
     if( chord_v >= 0 && chord_v != state->v && 
        (next_note && next_note->ev_veloc == chord_v ||
 	!next_note && is_first) ) {
-	sprintf(buf, "v=%d", chord_v);
+	sprintf(buf, "v=%ld", chord_v);
 	output_string(buf, indent);
 	state->v = chord_v;
     }
@@ -598,7 +598,7 @@ int  is_first;		/* true if the chord lies at the top of measure */
     if( chord_nv >= 0 && chord_nv != state->nv &&
        (next_note && next_note->ev_partner->ev_veloc == chord_nv ||
 	!next_note && is_first) ) {
-	sprintf(buf, "nv=%d", chord_nv);
+	sprintf(buf, "nv=%ld", chord_nv);
 	output_string(buf, indent);
 	state->nv = chord_nv;
     }
@@ -631,17 +631,17 @@ int  is_first;		/* true if the chord lies at the top of measure */
     
     /* do the same for ch, v and nv */
     if( chord_ch >= 0 && chord_ch != cstate.ch && !opt->ignore_chan ) {
-	sprintf(buf, "ch=%d", chord_ch);
+	sprintf(buf, "ch=%ld", chord_ch);
 	output_string(buf, indent);
 	cstate.ch = chord_ch;
     }
     if( chord_v >= 0 && chord_v != cstate.v ) {
-	sprintf(buf, "v=%d", chord_v);
+	sprintf(buf, "v=%ld", chord_v);
 	output_string(buf, indent);
 	cstate.v = chord_v;
     }
     if( chord_nv >= 0 && chord_nv != cstate.nv ) {
-	sprintf(buf, "nv=%d", chord_nv);
+	sprintf(buf, "nv=%ld", chord_nv);
 	output_string(buf, indent);
 	cstate.nv = chord_nv;
     }

@@ -34,5 +34,5 @@ sort keywords | awk '
 	printf("Error: Too many keywords\n") > "/dev/tty"
     }
   }
-' | gperf -D -p -t -G | \
+' | gperf -D -p -t -G -I | \
 sed 's/^static struct keyword wordlist/struct keyword wordlist/' > keyword.c

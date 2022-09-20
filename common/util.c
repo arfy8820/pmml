@@ -138,7 +138,7 @@ int	c;
 /*
  * add a string to a dynamically-growing string
  */
-char *
+void
 _addstr(sp, str)
 String  *sp;
 char  *str;

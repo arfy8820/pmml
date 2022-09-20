@@ -48,8 +48,8 @@ typedef struct histent {
 
 #define  HUGE    1e10
 
-static void	line_fit_a_sequence P((EventSeq *, int, float));
-static int	recg_line P((Event *, Event **, int, float, Histogram *));
+static void	line_fit_a_sequence P((EventSeq *, int, double));
+static int	recg_line P((Event *, Event **, int, double, Histogram *));
 static void	init_histogram P((Histogram *));
 static void	insert_histogram P((Histogram *, int));
 static int	get_tmstep P((Histogram *));
@@ -65,7 +65,7 @@ line_fit(eseq, maxtmstep, tolerance)
 EventSeq  *eseq;	/* list of event sequences */
 int  maxtmstep;		/* maximum time interval of adjacent control-change
 			   events in a single continuous control-change */
-float  tolerance;	/* error tolerance for line fitting: It is guaranteed
+double  tolerance;	/* error tolerance for line fitting: It is guaranteed
 			   that no control values are apart from the line
 			   by more than this torelance. */
 {
@@ -99,7 +99,7 @@ static void
 line_fit_a_sequence(eseq, maxtmstep, tolerance)
 EventSeq  *eseq;	/* a single sequence of events */
 int  maxtmstep;
-float  tolerance;	
+double  tolerance;	
 {
     Event  *ep1, *ep2;
     Histogram  hist;
@@ -144,7 +144,7 @@ recg_line(ep1, ep2, maxtmstep, tolerance, hist)
 Event *ep1;
 Event **ep2;	/* output */
 int  maxtmstep;
-float  tolerance;
+double  tolerance;
 Histogram  *hist;
 {
     Event  *ep, *epnext;

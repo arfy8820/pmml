@@ -52,7 +52,7 @@ static  void  too_many_args P((char *));
 static	void  help P((char *));
 
 
-main(argc, argv)
+int main(argc, argv)
 int  argc;
 char  **argv;
 {

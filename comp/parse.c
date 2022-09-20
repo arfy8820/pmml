@@ -90,10 +90,10 @@ static void	detach_effector P((EffInst *));
 static int	print_numlist P((EventSet, int, int, char *, char *));
 static void	print_event_types P((EventSet));
 static Thread  *create_thread P((Thread *, int));
-static 		err_trk P((int));
-static 		err_chan P((int));
-static		err_funcno P((int));
-static		warn_note P((int));
+static int	err_trk P((int));
+static int	err_chan P((int));
+static int	err_funcno P((int));
+static void	warn_note P((int));
 static void	err_undef P((DicEnt *));
 int end_alt(int flags);
 
@@ -726,7 +726,7 @@ do_lbrace()
     return 0;
 }
 
-int
+void
 do_rbrace()
 {
     error(cur_srcpos, "'}': No corresponding '{'",
@@ -796,7 +796,7 @@ do_lbracket()
     return 0;
 }
 
-int
+void
 do_rbracket()
 {
     error(cur_srcpos, "']': No corresponding '['",
@@ -3809,7 +3809,7 @@ Rational  *time;
 	 "時刻の値が負です(０に修正されます)  (t=%s)", rstring(time));
 }
 
-static
+static int
 err_trk(tk)
 int  tk;
 {
@@ -3817,7 +3817,7 @@ int  tk;
 	  "トラック番号が範囲外です (tk=%d)", tk);
 }
 
-static
+static int
 err_chan(ch)
 int  ch;
 {
@@ -3825,7 +3825,7 @@ int  ch;
 	  "チャネル番号が範囲外です (ch=%d)", ch);
 }
 
-static
+static int
 err_funcno(fn)
 int  fn;
 {
@@ -3833,7 +3833,7 @@ int  fn;
 	  "ファンクション番号が範囲外です (func_no=%d)", fn);
 }
 
-static
+static void
 warn_note(note)
 int  note;
 {

@@ -50,7 +50,7 @@ typedef struct  {
 char *	attach_extension P((char *, char *));
 char *	replace_extension P((char *, char *));
 int	expand_string P((String *, int));
-char *  _addstr P((String *, char *));
+void  _addstr P((String *, char *));
 char *  prepend_path P((char **, char *));
 
 #ifdef FREE_TEST

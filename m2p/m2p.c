@@ -49,7 +49,7 @@ static void	simple_help P((void));
 static void	help P((char *));
 
 
-main(argc, argv)
+int main(argc, argv)
 int  argc;
 char  **argv;
 {

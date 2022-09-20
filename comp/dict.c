@@ -340,7 +340,7 @@ char  *str;
 
     for( p = str; *p; p++ ) {
 	h = (h << 4) + *p;
-	if( t = h & 0xf0000000 ) {
+	if( (t = h & 0xf0000000) ) {
 	    h ^= (t >> 24) ^ t;
 	}
     }

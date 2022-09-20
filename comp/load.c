@@ -42,8 +42,8 @@ static LoadSlot  ldslots[MAX_LOAD];
 static LoadSlot *open_midi_file P((char *));
 static void 	read_track P((LoadSlot *, Rational *, Rational *, int,
 			      Rational *));
-static 		ld_warn_note P((LoadSlot *, int));
-static 		ld_warn_meta P((LoadSlot *, int));
+static void	ld_warn_note P((LoadSlot *, int));
+static void	ld_warn_meta P((LoadSlot *, int));
 
 extern int  max_reso;	/* maximum resolution among loaded files */
 
@@ -359,7 +359,7 @@ Rational  *end_time;	/* (Output) End time of loaded track */
     radd(end_time, btime, end_time);
 }
 
-static
+static void
 ld_warn_note(slot, note)
 LoadSlot *slot;
 int  note;
@@ -369,7 +369,7 @@ int  note;
 	 strcmp(slot->fname, "-") == 0 ? "stdin" : slot->fname, note);
 }
 
-static
+static void
 ld_warn_meta(slot, mtype)
 LoadSlot *slot;
 int  mtype;

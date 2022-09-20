@@ -209,7 +209,7 @@ typedef struct event_seq {
 				   applied to the events in this sequence */
 } EventSeq;
     
-extern void line_fit(EventSeq *eseq, int maxtmstep, float tolerance);
+extern void line_fit(EventSeq *eseq, int maxtmstep, double tolerance);
 
 typedef struct track {
     EventSeq *eseq;		/* ptr to the list of event sequences 
