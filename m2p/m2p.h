@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 /********************************************************************
  * Constants
@@ -209,7 +210,7 @@ typedef struct event_seq {
 				   applied to the events in this sequence */
 } EventSeq;
     
-extern void line_fit(EventSeq *eseq, int maxtmstep, double tolerance);
+extern void line_fit(EventSeq *eseq, int maxtmstep, float tolerance);
 
 typedef struct track {
     EventSeq *eseq;		/* ptr to the list of event sequences 
@@ -267,10 +268,19 @@ typedef struct options {
  ********************************************************************/
 
 #ifndef MAXINT
-#define  MAXINT   (~(1 << ((sizeof(int) * 8) - 1)))
+#ifdef INT_MAX
+#define MAXINT INT_MAX
+#else
+	#define  MAXINT   (~(1 << ((sizeof(int) * 8) - 1)))
 #endif
+#endif
+
 #ifndef MAXLONG
-#define  MAXLONG   (~(1 << ((sizeof(long) * 8) - 1)))
+#ifdef LONG_MAX
+#define MAXLONG LONG_MAX
+#else
+	#define  MAXLONG   (~(1 << ((sizeof(long) * 8) - 1)))
+#endif
 #endif
 
 /********************************************************************
