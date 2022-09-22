@@ -31,7 +31,7 @@
 #endif
 #include "m2p.h"
 
-char	release[] = "0.2";
+char	release[] = "0.3";
 char	rcs_version[] = "$Revision: 0.13 $";
 
 static void	output_track P((Track *, Options *, int, int));
