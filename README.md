@@ -11,19 +11,25 @@ This fork includes the following so far.
 
 ## Things still to be done
 
-* Convert japanese text files to UTF-8. Sources in the comp and m2p directories are converted.
 * fix the internal links in the japanese version of the texinfo sources when converted to HTML.
 
 ## Compilation and running notes
 
-So far, this code is extremely 32-bit centric, inherently relying on the fact that int/long/pointers are 32-bits, and thus seems very tricky to get working on 64-bit systems. Because of this, use a 32-bit compiler and runtime for now. Under windows, MSYS2 with the I686 toolchain works fine.
-Under mac/linux, use multilib support, etc.
-Note though that Mac OS catalina and later have no provision for running any 32-bit code natively.
-To compile, configure the values at the top of Makefile, namely, `bindir` and `libdir`. For 32-bit compilation under a multilib environment, add -m32 to the CC variable in makefile.
+As of 2022-09-18, this code now runs as both 32-bit and 64-bit code, except under windows.
+To compile, configure the values at the top of Makefile in the root of this tree, or pass the BINDIR and LIBDIR variables to make.
+The source will compile on both clang and gcc. Tested systems include:
+* MSYS gcc 12.2, mingw32 on windows 11.
+* apple clang 13.0 and 14.0 under mac os 12.
+* gcc 12.2 under Archlinux
+* gcc 9 under Ubuntu 20.04
+* FreeBSD 13.0 and clang 11.0
+* cross-compiled from mac OS with dos/DJGPP, gcc 10.2.
 
-## call for help
+## Binary/package releases
 
-I feel, at this point, 2022-01-18, that I've taken this code as far as I can. I've managed to get the code compiling with both
-clang and gcc, and significantly reduced the number of warnings from clang by running iconv over the sources and converting to UTF-8 from EUC-JP.
-However, I can't figure out how to prevent the segfaults that occur when the code is run as 64-bit. The C style seems very old, and I'm having trouble figuring out how it all fits together in places. Especially how the main PmmlObject union works.
-So, for now, I'm pausing work on this code, but I'm leaving it here if anyone would like to take a look at it, and see if it can be made to run once again on new systems, such as Apple's M1 mac.
+A windows binary package is available, containing both pmml and m2p, all libraries and examples, and both English and Japanese manuals in html format.
+A homebrew tap is also available.
+'brew tap arfy8820/midiutils'
+or
+'brew install arfy8820/midiutils/pmml'
+The brew formula contains the same items as the windows version, above.

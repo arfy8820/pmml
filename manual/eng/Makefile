@@ -1,6 +1,6 @@
 TEXI2HTML = texi2any
 TEX = ptex
-EMACS = mule
+EMACS = emacs
 
 pmml: pmml.texi
 	$(EMACS) -batch pmml.texi -f texinfo-format-buffer -f save-buffer -kill
