@@ -31,8 +31,8 @@
 #include "pmml.h"
 #include "../common/smf.h"
 
-char	release[] = "0.3";
-char	rcs_version[] = "$Revision: 0.70 $";
+char	release[] = "0.31";
+char	rcs_version[] = "$Revision: 0.71 $";
 int	japan = 0;
 int	trace_level = 0;
 extern  int  sort_by_priority;

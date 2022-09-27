@@ -3422,7 +3422,7 @@ EffInst  *eip;
 		  "val: 配列要素の型が違います");
 	}
 	conv_to_int(&array_ref(ap,i), &ival); 
-	*p++ = ival & dmask;
+	*p++ = (i == ap->size-1 && ival == 0xf7) ? ival : ival & dmask;
     }
 
     /* set length */

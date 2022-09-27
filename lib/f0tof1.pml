@@ -3,6 +3,7 @@
  *   In the output file, Track 1 will contain a tempo map, 
  *   Track 2 will contain exclusive messages, 
  *   and Track 3 thru. 18 will contain messages per channel.
+ * Enhanced by Arthur Pirika to name tracks.
  *
  * usage:  pmml -i f0tof1 -o format-1-file  -l format-0-file 
  */
@@ -26,28 +27,46 @@
  */
 
 $format = 1
-if( !defined($resolution) )	{ $resolution = 0 }
-if( !defined($no_run_stat) )	{ $no_run_stat = 0 }
-if( !defined($pack_tracks) )	{ $pack_tracks = 0 }
-if( !defined($no_retrigger) )	{ $no_retrigger = 0 }
-if( !defined($ch_mask) )	{ $ch_mask = 0 }
-if( !defined($track_list) )	{ $track_list = "" }
-if( !defined($pos_begin) )	{ $pos_begin = "" }
-if( !defined($pos_end) )	{ $pos_end = "" }
+if( !defined($resolution) ) { $resolution = 0 }
+if( !defined($no_run_stat) )    { $no_run_stat = 0 }
+if( !defined($pack_tracks) )    { $pack_tracks = 0 }
+if( !defined($no_retrigger) )   { $no_retrigger = 0 }
+if( !defined($ch_mask) )    { $ch_mask = 0 }
+if( !defined($track_list) ) { $track_list = "" }
+if( !defined($pos_begin) )  { $pos_begin = "" }
+if( !defined($pos_end) )    { $pos_end = "" }
 
 $smfout($outfile, $resolution, $format, 
-	$no_run_stat, $pack_tracks, $no_retrigger, 
-	$ch_mask, $track_list, $pos_begin, $pos_end)
+    $no_run_stat, $pack_tracks, $no_retrigger, 
+    $ch_mask, $track_list, $pos_begin, $pos_end)
 
 defeff(diverse_tracks) {
+  attach {
+    local::$sysex_used = 0
+    local::$channel_used = rep(16, 0)
+  }
   case(note, ctrl(0-191)) {
     tk = ch + 2
+    $channel_used[ch] = 1
   }
   case(excl, arbit) {
     tk = 2
+    $sysex_used = 1
   }
   case(all) {  // other types
     tk = 1
+  }
+  wrap {
+    if ($sysex_used) {
+      tk = 2 t=0
+      text(3, "sys-ex")
+    }
+    for ($i, 1, 16) {
+      if ($channel_used[$i]) {
+        tk = $i + 2 t = 0
+        text(3, sprintf("Channel %d", $i))
+      }
+    }
   }
 }
 
