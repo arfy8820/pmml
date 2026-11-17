@@ -72,20 +72,34 @@ struct smf_bufblk {
 };
 
 /*
+ * function prototypes macro
+ */
+#if defined(__STDC__) && !defined(PROTOTYPE)
+#   define PROTOTYPE 1 
+#endif
+#if !defined(P) 
+#   ifdef PROTOTYPE
+#      define P(arg)  arg
+#   else
+#      define P(arg)  ()
+#   endif
+#endif
+
+/*
  * FILE structure specialized for a MIDI file
  */
-typedef struct {
+typedef struct _mfile {
     FILE  *fp;
     int	  run_st;	/* MIDI running status */
     long  loc;		/* In non-buffered write mode:
-			     file offset at the top of the current track
-			   In buffered write mode:
-			     the number of bytes in a track
-			   In read mode:
-			     file offset at the top of the first track */
+				     file offset at the top of the current track
+				   In buffered write mode:
+				     the number of bytes in a track
+				   In read mode:
+				     file offset at the top of the first track */
     int  flags;		/* Bit0: true if the running status rule is applied
-			   Bit1: true if the file is lseek'able */
-    int	 (*fn_putc)();	/* function that outputs a byte to the file */
+				   Bit1: true if the file is lseek'able */
+    int	 (*fn_putc) P((int, struct _mfile *));	/* function that outputs a byte to the file */
     int  cur_track;	/* current track number (base is 1) */
     struct smf_bufblk  *bp;	/* pointer to the output buffer */
 } MFILE;
@@ -101,7 +115,7 @@ typedef struct {
 #define	ENOHEAD_SMF	514	/* Bad MIDI file format (No Header) */
 #define	EBADSTAT_SMF	515	/* Bad MIDI file format (No MIDI status) */
 #define	EBADMETA_SMF	516	/* Bad MIDI file format 
-				   (Too short tempo or seqno event) */
+					   (Too short tempo or seqno event) */
 #define ESEEKFAIL_SMF 	517	/* Can not seek (used by smf_chgheader) */
 
 /*
@@ -109,20 +123,6 @@ typedef struct {
  */
 #define	smf_putc(c,mfp)	(*(mfp)->fn_putc)((c),(mfp))
 #define smf_getc(mfp)	getc((mfp)->fp)
-
-/*
- * function prototypes
- */
-#if defined(__STDC__) && !defined(PROTOTYPE)
-#   define PROTOTYPE 1 
-#endif
-#if !defined(P) 
-#   ifdef PROTOTYPE
-#      define P(arg)  arg
-#   else
-#      define P(arg)  ()
-#   endif
-#endif
 
 MFILE	*smf_wopen P((char *, int, int, int));
 MFILE	*smf_fpwopen P((FILE *, int, int, int));

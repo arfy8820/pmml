@@ -783,7 +783,7 @@ do_while()
 {
     Token  loop_tok, *cond;
     Object  *op;
-    int  true;
+    int  is_true;
 
     /* collect argument token list */
     cond = scan_tklist(0, COLLECT, "while", '(', ')');
@@ -792,14 +792,14 @@ do_while()
     pushbk_symbol(')');   /* push sentinel in order to avoid `over-running' */
     pushbk_tklist(cond, 0);
     if( !(op = get_expression()) )  parse_error(cur_token);
-    true = istrue_object(op);
+    is_true = istrue_object(op);
     free_object(op);
     if( get_token()->type != ')' ) {
 	error(cur_srcpos, "while: Bad conditional expression",
 	      "while: 条件式が間違っています");
     }	
     
-    if( true ) {
+    if( is_true ) {
 	/* loop is continued */
 	loop_tok.type = T_EWHILE;
 	loop_tok.src_pos = cur_srcpos;
@@ -824,7 +824,7 @@ int  flags;
 {
     Token  *cond, *body;
     Object  *op;
-    int  true;
+    int  is_true;
     
     cond = cur_token->u.ewhile.cond;
     body = cur_token->u.ewhile.body;
@@ -835,14 +835,14 @@ int  flags;
 	pushbk_symbol(')');
 	pushbk_tklist(cond, 0);
 	if( !(op = get_expression()) )  parse_error(cur_token);
-	true = istrue_object(op);
+	is_true = istrue_object(op);
 	free_object(op);
 	if( get_token()->type != ')' ) {
 	    error(cur_srcpos, "while: Bad conditional expression",
 		   "while: 条件式が間違っています");
 	}	
 	
-	if( true ) {
+	if( is_true ) {
 	    /* loop is continued */
 	    pushbk_tklist(body, 0);
 	    return 0;

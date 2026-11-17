@@ -24,12 +24,21 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+#ifdef _WIN32
+#include <io.h>
+#endif
+#ifndef O_BINARY
+#ifdef _O_BINARY
+#define O_BINARY _O_BINARY
+#endif
+#endif
+#if defined(_MSC_VER) && !defined(setmode)
+#define setmode _setmode
+#endif
 #define	__SMF_C__
 #include "smf.h"
 
 #define	ANY	0
-
-extern	int	errno;
 
 static	void	write_header P((MFILE *, int, int, int));
 static	int  	read_mthd P((FILE *));
@@ -60,7 +69,7 @@ int   division;		/* resolution of delta-time */
 
     if( strcmp(path, "-") == 0 ) {
 	fp = stdout;
-#ifdef DOS
+#if defined(DOS) || defined(_WIN32)
 	setmode(fileno(fp), O_BINARY);
 #endif
     } else if( !(fp = fopen(path, "wb")) ) {
@@ -465,7 +474,7 @@ int   *division;
 
     if( strcmp(path, "-") == 0 ) {
 	fp = stdin;
-#ifdef DOS
+#if defined(DOS) || defined(_WIN32)
 	setmode(fileno(fp), O_BINARY);
 #endif
     } else if( !(fp = fopen(path, "rb")) ) {

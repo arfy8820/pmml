@@ -2654,6 +2654,7 @@ EffInst  *eip;
     MacroCall *mp;
     DicEnt  *dp;
     unsigned long  chs = 0;
+    EventSet  chset;
     int  eclass = 0;
     
     mp = scan_args(":y", cmdname);
@@ -2680,8 +2681,9 @@ EffInst  *eip;
 	}
     }
 
-    parse_numlist(&chs, 1, 16, cmdname);
-    chs >>= 1;
+    e_allclr(chset);
+    parse_numlist(chset, 1, 16, cmdname);
+    chs = chset[0] >> 1;
 
     for( ; eip != NULL; eip = eip->next ) {
 	if( eclass && eip->class != dp->dic_eclass )  continue;
@@ -3582,7 +3584,7 @@ print_effinst(eip)
 EffInst  *eip;
 {
     EventSet  etmp;
-    unsigned long  ltmp;
+    EventSet  chset;
 
     printf("\tclass name = \"%s\"", eip->class->dp->name);
     if( eip->class->type != EC_BuiltIn ) {
@@ -3597,9 +3599,10 @@ EffInst  *eip;
     e_andnot(etmp, eip->ethru);
     print_event_types(etmp);
     printf("\n");
-    ltmp = ~eip->cthru;
+    e_allclr(chset);
+    chset[0] = (unsigned short)~eip->cthru;
     printf("\teffect MIDI channels = ");
-    print_numlist(&ltmp, 1, 16, "", "");
+    print_numlist(chset, 1, 16, "", "");
     printf("\n");
 }
 

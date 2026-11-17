@@ -5,7 +5,7 @@ PROG	= m2p
 CC	= gcc
 SHELL	= /bin/sh
 DFLAGS	= 
-CCOPTS	= -O
+CCOPTS	= -O -std=gnu17
 CFLAGS	= $(CCOPTS) $(DFLAGS) -DPMML_PATH='"$(PMMLPATH)"' 
 LDFLAGS	=
 RCSFLAGS =
@@ -25,7 +25,7 @@ install: $(PROG)
 	install -s -m755 $(PROG) $(BINDIR)
 
 clean	:
-	rm -f $(PROG) $(OBJS) core mon.out gmon.out
+	rm -f $(PROG) $(PROG).exe $(OBJS) core mon.out gmon.out
 
 depend:
 	makedepend $(SRCS)

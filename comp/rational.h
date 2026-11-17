@@ -39,11 +39,14 @@ typedef struct rational {
     short  intg;		/* integer part */
     short  num;			/* numerator */
     short  den;			/* denominator */
+#if PMML_LARGE_PTR
+    pmml_uint64 pad;
+#endif
 #else
 #if PMML_LARGE_PTR
-        long pad;
-		#endif
-		short  num;			/* numerator */
+    pmml_uint64 pad;
+#endif
+    short  num;			/* numerator */
     short  den;			/* denominator */
     short  intg;		/* integer part */
     unsigned short  type;	/* must be O_RATIONAL */
@@ -52,27 +55,31 @@ typedef struct rational {
 
 /* initializer */
 #if PMML_BIG_ENDIAN
+#if PMML_LARGE_PTR
+#  define RINIT(_intg,_num,_den) {O_RATIONAL, _intg, _num, _den, 0}
+#else
 #  define RINIT(_intg,_num,_den) {O_RATIONAL, _intg, _num, _den}
+#endif
 #else
 #if PMML_LARGE_PTR
 #  define RINIT(_intg,_num,_den) {0, _num, _den, _intg, O_RATIONAL}
 #else
-	#  define RINIT(_intg,_num,_den) {_num, _den, _intg, O_RATIONAL}
+#  define RINIT(_intg,_num,_den) {_num, _den, _intg, O_RATIONAL}
 #endif
 #endif
 
 /* compare two rational numbers */
 #define rcomp(a,b)   ((a)->intg == (b)->intg ? (\
-		      (a)->den == (b)->den ? (long)(a)->num - (b)->num : \
-		      (long)(a)->num*(b)->den - (long)(b)->num*(a)->den ) : \
-		      (long)(a)->intg - (b)->intg)
+			      (a)->den == (b)->den ? (long)(a)->num - (b)->num : \
+			      (long)(a)->num*(b)->den - (long)(b)->num*(a)->den ) : \
+			      (long)(a)->intg - (b)->intg)
 #define requal(a,b)  ((a)->intg == (b)->intg && \
-		      (*(long *)&(a)->num == *(long *)&(b)->num || \
-		      (a)->num * (b)->den == (b)->num * (a)->den))
+			      (((a)->num == (b)->num && (a)->den == (b)->den) || \
+			      (long)(a)->num * (b)->den == (long)(b)->num * (a)->den))
 #define rless(a,b)   ((a)->intg == (b)->intg ? (\
-		      (a)->den == (b)->den ? (a)->num < (b)->num : \
-		      (a)->num * (b)->den < (b)->num * (a)->den ) : \
-		      (a)->intg < (b)->intg)
+			      (a)->den == (b)->den ? (a)->num < (b)->num : \
+			      (long)(a)->num * (b)->den < (long)(b)->num * (a)->den ) : \
+			      (a)->intg < (b)->intg)
 #define rlesseq(_a,_b)     (!rless((_b),(_a)))
 #define rgreater(_a,_b)    (rless((_b),(_a)))
 #define rgreatereq(_a,_b)  (!rless((_a),(_b)))
@@ -102,4 +109,4 @@ void	rset P((long, int, Rational *));
 void	rneg P((Rational *));
 void	int_to_rational P((long, Rational *));
 void	float_to_rational P((double, Rational *));
-char *	rstring P((Rational *));
+char	*rstring P((Rational *));

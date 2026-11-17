@@ -159,7 +159,7 @@ EffInst  *eip;
     if( p->format != 2 ) {
 	eip->flags |= EF_MoveTimeEv;
     }
-    eip->data = (long) p;
+    eip->data = (void *) p;
 }
 
 /*

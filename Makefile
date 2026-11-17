@@ -11,10 +11,10 @@ LIBDIR  = /usr/local/lib/pmml
 BINDIR  = /usr/local/bin
 
 # Command name of the C compiler
-CC	= cc
+CC	= gcc
 
 # C compiler options
-CCOPTS	= -O
+CCOPTS	= -O -std=gnu17
 # for DOS, use the next line
 #CCOPTS	= -O -DDOS
 

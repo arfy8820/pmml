@@ -27,7 +27,13 @@
 #include <ctype.h>
 #include <time.h>
 #include <unistd.h>
+#ifdef _WIN32
+#include <process.h>
+#endif
 #include "pmml.h"
+
+long random P((void));
+void srandom P((unsigned int));
 
 static void   do_rand P((int, Object *));
 static void   do_irand P((int, Object *));
@@ -658,8 +664,6 @@ do_atof(argc, argv)
 int  argc;
 Object  *argv;
 {
-    double  atof();
-
     pushbk_float(atof(argv->o_str));
 }
 

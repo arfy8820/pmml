@@ -222,7 +222,7 @@ int  format;
 {
     EventSeq  *sp;
     int  ch, cnt;
-    void (*outfunc)() = opt->mode == MPL ? mplout : eplout;
+    void (*outfunc) P((Event *, Options *, int)) = opt->mode == MPL ? mplout : eplout;
     
     fprintf(OUT, "/* === Track %d === */\n", tk);
     if( format != 0 || tp->eseq ) {

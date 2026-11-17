@@ -23,6 +23,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#if defined(_MSC_VER)
+  typedef unsigned __int64 pmml_uint64;
+  typedef unsigned __int32 pmml_uint32;
+#else
+  #include <stdint.h>
+  typedef uint64_t pmml_uint64;
+  typedef uint32_t pmml_uint32;
+#endif
 
 /********************************************************************
  * Constants
@@ -31,7 +39,7 @@
  * default search path for source file
  */
 #ifndef PMML_PATH
-#ifdef DOS
+#if defined(DOS) || defined(_WIN32)
 #  define PMML_PATH  ".;c:/pmml/lib;../lib"
 #else
 #  define PMML_PATH  ".;/usr/local/lib/pmml;../lib"
@@ -81,14 +89,20 @@
 #  ifdef PMML_LITTLE_ENDIAN
 #    define PMML_BIG_ENDIAN  0
 #  else
-#    if defined(mc68000) || defined(sparc) || defined(MIPSEB)
-#      define PMML_BIG_ENDIAN  1
-#    else
-#      if defined(i386) || defined(__x86_64__) || defined(__arm64) || defined(MIPSEL) || defined(alpha)
-#        define PMML_BIG_ENDIAN  0
+#    if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__)
+#      if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#        define PMML_BIG_ENDIAN 1
 #      else
-         ... Either PMML_BIG_ENDIAN or PMML_LITTLE_ENDIAN must be defined.
+#        define PMML_BIG_ENDIAN 0
 #      endif
+#    elif defined(__BIG_ENDIAN__) || defined(_BIG_ENDIAN)
+#      define PMML_BIG_ENDIAN 1
+#    elif defined(mc68000) || defined(sparc) || defined(MIPSEB)
+#      define PMML_BIG_ENDIAN 1
+#    elif defined(__LITTLE_ENDIAN__) || defined(_LITTLE_ENDIAN) || defined(_WIN32) || defined(_WIN64) || defined(__i386__) || defined(i386) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_AMD64) || defined(_M_ARM) || defined(_M_ARM64) || defined(__arm__) || defined(__arm64) || defined(__aarch64__) || defined(MIPSEL) || defined(alpha)
+#      define PMML_BIG_ENDIAN 0
+#    else
+         ... Either PMML_BIG_ENDIAN or PMML_LITTLE_ENDIAN must be defined.
 #    endif
 #  endif
 #endif
@@ -96,10 +110,14 @@
 /********************************************************************
  * Make the code adapt to bit-depth of the machine. *
  ********************************************************************/
-#      if defined(__x86_64__) || defined(__arm64)
-#      define PMML_LARGE_PTR 1
+#if (defined(__SIZEOF_POINTER__) && __SIZEOF_POINTER__ == 8) || \
+    defined(_WIN64) || defined(__LP64__) || defined(_LP64) || \
+    defined(__x86_64__) || defined(_M_X64) || defined(_M_AMD64) || \
+    defined(__aarch64__) || defined(_M_ARM64) || defined(__arm64) || \
+    defined(__ia64__) || defined(__ppc64__)
+#  define PMML_LARGE_PTR 1
 #else
-	#define PMML_LARGE_PTR 0
+#  define PMML_LARGE_PTR 0
 #endif
 
 /********************************************************************
@@ -158,11 +176,14 @@ typedef union object {
 	short  pad1;
 	short  pad2;
 	short  pad3;
-#else
-	#if PMML_LARGE_PTR
-long pad0;
+#if PMML_LARGE_PTR
+	pmml_uint64  pad0;
 #endif
-short  pad1;
+#else
+#if PMML_LARGE_PTR
+	pmml_uint64  pad0;
+#endif
+	short  pad1;
 	short  pad2;
 	short  pad3;
 	unsigned short  type;	/* O_XXX */
@@ -171,20 +192,27 @@ short  pad1;
 
     Rational  r;
 
-    #if PMML_LARGE_PTR
-	struct {
-		long pad;
-		#endif
+    struct {
+#if PMML_LARGE_PTR
+#if !PMML_BIG_ENDIAN
+	pmml_uint64  _pad_f;
+#endif
+#endif
 	PmmlFloat  fpval;		/* for O_FLOAT */ 
-
-    #if PMML_LARGE_PTR
-	} _f;
-	#define fpval  _f.fpval
-	#endif
-	
-	struct {
+#if PMML_LARGE_PTR
 #if PMML_BIG_ENDIAN
-	long   pad;
+	pmml_uint64  _pad_f;
+#endif
+#endif
+    };
+
+    struct {
+#if PMML_BIG_ENDIAN
+#if PMML_LARGE_PTR
+	pmml_uint64  pad;
+#else
+	pmml_uint32  pad;
+#endif
 #endif
 	union object_data {
 	    PmmlInt  val;	/* for O_INT */
@@ -193,7 +221,7 @@ short  pad1;
 	    struct token  *tp;	/* for O_STOKENS or O_WTOKENS */
 	} _u;
     } _d;
-	
+
 #   define o_type  _t.type 
 #   define o_val   _d._u.val
 #   define o_str   _d._u.str
@@ -811,7 +839,7 @@ typedef struct eff_inst {
     int	      flags;		/* effector flags */
     EventSet  ethru;		/* event through bits */
     ChanSet   cthru;		/* channel through bits */
-    long      data;		/* reserved for built-in effectors */
+    void      *data;		/* reserved for built-in effectors */
     MTracks   ebuf;		/* event buffer for this effector */
     struct dic_ent  *val, *etype, *ctype;	/* special effector-
 						   instance macros */
@@ -1025,8 +1053,8 @@ int	conv_to_float P((Object *, PmmlFloat *));
 
 /* expr.c */
 void	init_expression P((void));
-Object *_get_expression();
-#define get_expression() _get_expression(0)
+Object *_get_expression P((int, Object *));
+#define get_expression() _get_expression(0, NULL)
 int	pitch_to_val P((Token *));
 
 /* array.c */

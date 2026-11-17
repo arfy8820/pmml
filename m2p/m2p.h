@@ -68,7 +68,7 @@
  * default search path for the files describing GM instrument names
  */
 #ifndef PMML_PATH
-#ifdef DOS
+#if defined(DOS) || defined(_WIN32)
 #  define PMML_PATH  ".;c:/pmml/lib;../lib"
 #else
 #  define PMML_PATH  ".;/usr/local/lib/pmml;../lib"

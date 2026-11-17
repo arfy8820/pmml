@@ -4,7 +4,7 @@ PMMLPATH = .;$(LIBDIR)
 CC	= gcc
 PROG	= pmml
 SHELL	= /bin/sh
-CCOPTS  = -O
+CCOPTS  = -O -std=gnu17
 DFLAGS	= #-DDEBUG -DPRINT_REF -DDEBUG2 -DFREE_TEST
 CFLAGS	= $(CCOPTS) $(DFLAGS) -DPMML_PATH='"$(PMMLPATH)"'
 LDFLAGS	=
@@ -33,7 +33,7 @@ test	: $(PROG)
 	cd tests; $(MAKE)
 
 clean	:
-	rm -f $(PROG) $(OBJS) core mon.out gmon.out out.mid test.mid
+	rm -f $(PROG) $(PROG).exe $(OBJS) keyword.c keyword.h table2.c core mon.out gmon.out out.mid test.mid
 	cd ../c_lib; $(MAKE) clean
 	cd tests; $(MAKE) clean
 

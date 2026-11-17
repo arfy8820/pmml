@@ -519,14 +519,14 @@ op_uminus()
 void
 op_lognot()
 {
-    int  true;
+    int  is_true;
 
-    if( (true = istrue_object(&dest1)) == -1 ) {
+    if( (is_true = istrue_object(&dest1)) == -1 ) {
 	op_serror();
     }
     free_object(&dest1);
     dest1.o_type = O_INT;
-    dest1.o_val = ! true;
+    dest1.o_val = ! is_true;
 }
 
 void
@@ -1369,19 +1369,19 @@ op_logor()
 void
 op_cond()
 {
-    int  true;
+    int  is_true;
 
     if( optr_top.op != '?' ) {
 	op_serror();
     } 
     --optr_n;
 
-    if( (true = istrue_object(&opd_third)) == -1 ) {
+    if( (is_true = istrue_object(&opd_third)) == -1 ) {
 	op_serror();
     }
     free_object(&opd_third);
 
-    if( true ) {
+    if( is_true ) {
 	opd_third = opd_sec;
 	free_object(&opd_top);
     } else {

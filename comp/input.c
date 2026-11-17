@@ -785,7 +785,6 @@ struct ibuffer  *ip;
     int  state = 0;
     PmmlInt  val;
     PmmlFloat  in_fpval;
-    double  atof();
     int	 flags, octave;
     int  dotcnt;
     struct keyword  *kw;
